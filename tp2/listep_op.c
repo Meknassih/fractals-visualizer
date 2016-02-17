@@ -59,6 +59,23 @@ PLISTE lire_liste(char * nf){
     }
 	return new_list;
 }
+
+void ecrire_liste(char * nf, PLISTE pl) {
+  FILE *pnf;
+  EPOINT *current_point;
+
+  pnf=fopen(nf, "w");
+  if (pnf==NULL) {
+    printf("Impossible d'ouvrir le fichier\n");
+    return;
+  }
+  current_point=pl;
+  while(current_point != NULL) {
+    fprintf(pnf, "%lf %lf\n", current_point->x, current_point->y);
+    current_point = current_point->next;
+  }
+  printf("Liste ecrite dans %s\n", nf);
+}
    
 void afficher_list(PLISTE l){
 			PLISTE current_point = l;

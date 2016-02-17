@@ -9,6 +9,9 @@ PLISTE init_liste(double xx, double yy) {
   new_list->y = yy;
   new_list->next = NULL;
 
+  printf("INIT\n");
+  printf("new_list->x=%lf\nnew_listmaillon->y=%lf\nnew_list->next=%p\n\n", new_list->x, new_list->y, new_list->next);
+
   return new_list;
 }
 
@@ -41,17 +44,15 @@ PLISTE lire_liste(char * nf){
     pnf = fopen(nf, "r");
     if (pnf != NULL)
     {
-		fscanf(pnf,"%lf %lf\n", &x, &y);
-		new_list = init_liste(x,y);
-			printf("INIT\n");
-			printf("new_list->x=%lf\nnew_list->y=%lf\nnew_list->next=%p\n", new_list->x, new_list->y, new_list->next);
-			end_point = new_list;
-		while(fscanf(pnf, "%lf %lf\n", &x, &y) != -1){
-			//	printf("x = %lf y = %lf\n", x, y);
-			end_point->next = insert_after(end_point, x,y);
-			end_point = end_point->next;
-		}
-	}
+      fscanf(pnf,"%lf %lf\n", &x, &y);
+      new_list = init_liste(x,y);
+      end_point = new_list;
+      while(fscanf(pnf, "%lf %lf\n", &x, &y) != -1){
+	//printf("x = %lf y = %lf\n", x, y);
+	end_point->next = insert_after(end_point, x,y);
+	end_point = end_point->next;
+      }
+    }
     else
     {
         // On affiche un message d'erreur si on veut
@@ -74,14 +75,14 @@ void ecrire_liste(char * nf, PLISTE pl) {
     fprintf(pnf, "%.0lf %.0lf\n", current_point->x, current_point->y);
     current_point = current_point->next;
   }
-  printf("Liste ecrite dans %s\n", nf);
+  printf("Liste écrite dans %s\n", nf);
 }
    
 void afficher_liste(PLISTE l){
-			PLISTE current_point = l;
-			while(current_point != NULL) {
-			printf("INSERT\n");
-			printf("maillon->x=%lf\nmaillon->y=%lf\nmaillon->next=%p\n", current_point->x, current_point->y, current_point->next); 
-			current_point = current_point->next;
-		} 
+  PLISTE current_point = l;
+  int i=0;
+  while(current_point != NULL) {
+    printf("--N°:%d\nmaillon->x=%lf\nmaillon->y=%lf\nmaillon->next=%p\n", i, current_point->x, current_point->y, current_point->next); 
+    current_point = current_point->next;
+  } 
 }

@@ -71,13 +71,13 @@ void ecrire_liste(char * nf, PLISTE pl) {
   }
   current_point=pl;
   while(current_point != NULL) {
-    fprintf(pnf, "%lf %lf\n", current_point->x, current_point->y);
+    fprintf(pnf, "%.0lf %.0lf\n", current_point->x, current_point->y);
     current_point = current_point->next;
   }
   printf("Liste ecrite dans %s\n", nf);
 }
    
-void afficher_list(PLISTE l){
+void afficher_liste(PLISTE l){
 			PLISTE current_point = l;
 			while(current_point != NULL) {
 			printf("INSERT\n");

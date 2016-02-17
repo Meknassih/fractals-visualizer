@@ -46,7 +46,7 @@ PLISTE lire_liste(char * nf);
  * INPUT: nom fichier d'ecriture, liste a ecrire
  * OUTPUT: --
  */ 
-void afficher_list(PLISTE l);
+void afficher_liste(PLISTE l);
 void ecrire_liste(char * nf, PLISTE pl);
 
 #endif

@@ -20,7 +20,8 @@ int main() {
   PLISTE mlist;
   EPOINT *mpoint, *mpoint2;
   mlist = lire_liste("k1.in");
-	afficher_list(mlist);
+  afficher_liste(mlist);
+  ecrire_liste("k1.out", mlist);
   return 0;
   //return testLectureEcriture();
 }

@@ -74,12 +74,4 @@ PLISTE lire_liste(char * nf){
 	return new_list;
 }
 
-void afficher_liste(PLISTE l){
-  PLISTE current_point = l;
-  int i=0;
-  while(current_point != NULL) {
-    printf("--N°:%d\nmaillon->x=%lf\nmaillon->y=%lf\nmaillon->next=%p\n", i, current_point->x, current_point->y, current_point->next); 
-    current_point = current_point->next;
-  } 
-}
 

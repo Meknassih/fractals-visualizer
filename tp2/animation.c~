@@ -29,6 +29,14 @@ void win1_event(Ez_event *ev) {
   case Expose: 
     win1_on_expose(ev);
     break;
+  case KeyPress:
+    switch (ev->key_sym) {
+      case XK_q : ez_quit (); break;
+      case XK_n :
+	Win_Data *win1_data = ez_get_data(ev->win);
+	win1_data->list = lire_liste("");
+    }
+    break;
   }
 }
 

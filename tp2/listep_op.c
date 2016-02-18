@@ -47,3 +47,31 @@ void ecrire_liste(char * nf, PLISTE pl) {
   }
   printf("Liste ecrite dans %s\n", nf);
 }
+
+PLISTE lire_liste(char * nf){
+	double x,y;
+	int i;
+	PLISTE new_list;
+	EPOINT *end_point, *new_final;
+    FILE* pnf = NULL;
+    pnf = fopen(nf, "r");
+    if (pnf != NULL)
+    {
+      fscanf(pnf,"%lf %lf\n", &x, &y);
+      new_list = init_liste(x,y);
+      end_point = new_list;
+      while(fscanf(pnf, "%lf %lf\n", &x, &y) != -1){
+	//printf("x = %lf y = %lf\n", x, y);
+	end_point->next = insert_after(end_point, x,y);
+	end_point = end_point->next;
+      }
+    }
+    else
+    {
+        // On affiche un message d'erreur si on veut
+        printf("Impossible d'ouvrir le fichier\n");
+    }
+	return new_list;
+}
+
+

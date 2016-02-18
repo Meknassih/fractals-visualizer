@@ -31,15 +31,6 @@ EPOINT * insert_after(EPOINT * elt, double xx, double yy);
 EPOINT * remove_after(EPOINT * elt);
 
 /*
- * Lecture d'une liste de points depuis fichier de nom nf
- * On suppose un point par ligne, avec coordonnees separees par un
- * espace. 
- * INPUT: nom fichier
- * OUTPUT: liste de points lus sur le fichier en entree.
- */  
-PLISTE lire_liste(char * nf);
-
-/*
  * Ecriture fichier des points de la liste.
  * Un point par ligne, coordonnees separees par un espace, 
  * RC a la fin d'un point.
@@ -47,5 +38,14 @@ PLISTE lire_liste(char * nf);
  * OUTPUT: --
  */ 
 void ecrire_liste(char * nf, PLISTE pl);
+
+/*
+ * Lecture d'une liste de points depuis fichier de nom nf
+ * On suppose un point par ligne, avec coordonnees separees par un
+ * espace. 
+ * INPUT: nom fichier
+ * OUTPUT: liste de points lus sur le fichier en entree.
+ */  
+PLISTE lire_liste(char * nf);
 
 #endif

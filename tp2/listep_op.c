@@ -49,13 +49,12 @@ void ecrire_liste(char * nf, PLISTE pl) {
 }
 
 PLISTE lire_liste(char * nf){
-	double x,y;
-	int i;
-	PLISTE new_list;
-	EPOINT *end_point, *new_final;
-    FILE* pnf = NULL;
-    pnf = fopen(nf, "r");
-    if (pnf != NULL)
+  double x,y;
+  PLISTE new_list;
+  EPOINT *end_point;
+  FILE* pnf = NULL;
+  pnf = fopen(nf, "r");
+  if (pnf != NULL)
     {
       fscanf(pnf,"%lf %lf\n", &x, &y);
       new_list = init_liste(x,y);
@@ -66,12 +65,12 @@ PLISTE lire_liste(char * nf){
 	end_point = end_point->next;
       }
     }
-    else
+  else
     {
-        // On affiche un message d'erreur si on veut
-        printf("Impossible d'ouvrir le fichier\n");
+      // On affiche un message d'erreur si on veut
+      printf("Impossible d'ouvrir le fichier\n");
     }
-	return new_list;
+  return new_list;
 }
 
 void afficher_liste(PLISTE l){

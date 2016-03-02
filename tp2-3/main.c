@@ -44,9 +44,9 @@ int main(int argc, char *argv[]) {
   window = ez_window_create (500, 500, "Generate Koch", win1_event);
 
   //DEBUG
-  int x, y, c;
-  scanf("%d %d %d", &x, &y, &c);
-  win1_data.list = init_triangle(x,y,c);
+  double x, y, c;
+  scanf("%lf %lf %lf", &x, &y, &c);
+  win1_data.list = generer_etapes(5, init_triangle(x,y,c));
   ez_set_data(window, &win1_data);
   //
 

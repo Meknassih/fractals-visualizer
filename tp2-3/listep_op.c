@@ -13,13 +13,21 @@ PLISTE init_liste(double xx, double yy) {
 }
 
 EPOINT * insert_after(EPOINT * elt, double xx, double yy) {
-  EPOINT *new_point;
+  EPOINT *new_point, *new_next; //DEBUG new_next
 
   new_point=(EPOINT*)malloc(sizeof(EPOINT));
   new_point->x = xx;
   new_point->y = yy;
-  new_point->next = NULL;
-  elt->next = new_point;
+  if (elt->next == NULL) { //Si 'elt' était le dernier de la liste
+    new_point->next = NULL; //(xx,yy) n'a pas de successeur (il devient dernier)
+    printf("Added (%.0lf,%.0lf) after (%.0lf,%.0lf)\n", xx, yy, elt->x, elt->y); //DEBUG
+  } else { //Si 'elt' était en milieu de chaine
+    //Le point suivant 'elt' devient le successeur de (xx,yy)
+    new_point->next = elt->next;
+    new_next = new_point->next; //DEBUG
+    printf("Added (%.0lf,%.0lf) between (%.0lf,%.0lf) and (%.0lf,%.0lf)\n", xx, yy, elt->x, elt->y, new_next->x, new_next->y); //DEBUG
+  }
+  elt->next = new_point; //Le point suivant elt devient le point (xx,yy)
   
   return new_point;
 }

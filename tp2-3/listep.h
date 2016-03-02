@@ -12,4 +12,9 @@ struct EPOINT {
 
 typedef EPOINT * PLISTE;
 
+//Type 'bool' où false = 0 et true = 1
+typedef enum {
+  false, true
+} bool;
+
 #endif

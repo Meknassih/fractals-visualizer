@@ -1,0 +1,21 @@
+#include "generate.h"
+#include "listep_op.h"
+
+PLISTE init_triangle(EPOINT p1, EPOINT p2, EPOINT p3) {
+  PLISTE new_list;
+  EPOINT *second_point, *third_point;
+
+  new_list = init_liste(p1.x, p1.y);
+  second_point = insert_after(new_list, p2.x, p2.y);
+  third_point = insert_after(second_point, p3.x, p3.y);
+
+  return new_list;
+}
+
+PLISTE generer_etape(short int n, PLISTE lp) {
+
+}
+
+void koch(short int n, int x, int y, int c) {
+
+}

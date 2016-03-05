@@ -56,9 +56,10 @@ PLISTE generer_etapes(int n, PLISTE lp) {
     /*Détérminons maintenant le sommet du futur triangle équilatéral
      *dont les deux sommets inférieurs sont les précédents (je n'ai
      *pas pu faire plus simple)                                     */
-    //TODO: modifier la formule pour avoir le bon résultat
-    nouveau_sommet.x = round(cos(60 * M_PI / 180) * (premier_tiers.x - second_tiers.x) - sin(60 * M_PI / 180) * (premier_tiers.y - second_tiers.y) + second_tiers.x);
-    nouveau_sommet.y = round(sin(60 * M_PI / 180) * (premier_tiers.x - second_tiers.x) + cos(60 * M_PI / 180) * (premier_tiers.y - second_tiers.y) + second_tiers.y);
+    //nouveau_sommet.x = round(cos(60 * M_PI / 180) * (premier_tiers.x - second_tiers.x) - sin(60 * M_PI / 180) * (premier_tiers.y - second_tiers.y) + second_tiers.x);
+    //nouveau_sommet.y = round(sin(60 * M_PI / 180) * (premier_tiers.x - second_tiers.x) + cos(60 * M_PI / 180) * (premier_tiers.y - second_tiers.y) + second_tiers.y);
+	nouveau_sommet.x = round((premier_tiers.x + second_tiers.x)*cos(60 * M_PI / 180) - (second_tiers.y - premier_tiers.y)*sin(60 * M_PI / 180));
+    nouveau_sommet.y = round((premier_tiers.y + second_tiers.y)*cos(60 * M_PI / 180) + (second_tiers.x - premier_tiers.x)*sin(60 * M_PI / 180));
 
     /*Ajoutons tout ce beau monde dans la liste chainée entre 
      *les points begin_vertex et end_vertex du segment       */

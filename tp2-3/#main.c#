@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "ez-draw.h"
-#include "listep.h"
 #include "listep_op.h"
 #include "generate.h"
 
@@ -11,7 +10,7 @@ typedef struct {
 
 void win1_on_expose(Ez_event *ev) {
   Win_Data *win1_data = ez_get_data(ev->win);
-  dessiner_liste(ev->win, 1, win1_data->list, ez_blue);
+  dessiner_liste(2, win1_data->list, ez_blue);
 }
 
 void win1_event(Ez_event *ev) {

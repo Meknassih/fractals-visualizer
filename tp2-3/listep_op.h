@@ -1,9 +1,10 @@
 #ifndef __LPOINTOP__
 #define __LPOINTOP__
 
-#include "listep.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "listep.h"
+#include "ez-draw.h"
 
 /*
  * A COMPLETER PAR D'AUTRES OPERATIONS ESTIMEES UTILES 
@@ -50,5 +51,7 @@ PLISTE lire_liste(char * nf);
 
 
 void afficher_liste(PLISTE l);
+
+void dessiner_liste(Ez_window window, int thickness, PLISTE list, Ez_uint32 color);
 
 #endif

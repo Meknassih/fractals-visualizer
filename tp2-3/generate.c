@@ -20,8 +20,8 @@ PLISTE init_triangle(double xx, double yy, double c) {
   //Calcule les coordonnées du point supérieur
   //x3 = (int)xx+(c/2);
   //y3 = (int)yy-((c*sqrt(3))/2);
-  x3_ex = cos(60 * M_PI / 180) * (xx - x2) - sin(60 * M_PI / 180) * (yy - y2) + x2;
-  y3_ex = sin(60 * M_PI / 180) * (xx - x2) + cos(60 * M_PI / 180) * (yy - y2) + y2;
+  x3_ex = (xx + x2)*cos(60 * M_PI / 180) - (y2 - yy)*sin(60 * M_PI / 180);
+  y3_ex = (yy + y2)*cos(60 * M_PI / 180) + (x2- xx)*sin(60 * M_PI / 180);
   x3 = round(x3_ex);
   y3 = round(y3_ex);
   insert_after(second_point, x3, y3);
@@ -29,7 +29,8 @@ PLISTE init_triangle(double xx, double yy, double c) {
   return new_list;
 }
 
-PLISTE generer_etapes(int n, PLISTE lp) {
+void generer_etapes(PLISTE lp) {
+  
   EPOINT *end_vertex = lp->next; //Point représentant la fin du segment
   EPOINT *begin_vertex = lp; //Point représentant le début du segment
   EPOINT *p1, *p2; //Points temporaires pour l'insertion dans la liste
@@ -58,8 +59,8 @@ PLISTE generer_etapes(int n, PLISTE lp) {
      *pas pu faire plus simple)                                     */
     //nouveau_sommet.x = round(cos(60 * M_PI / 180) * (premier_tiers.x - second_tiers.x) - sin(60 * M_PI / 180) * (premier_tiers.y - second_tiers.y) + second_tiers.x);
     //nouveau_sommet.y = round(sin(60 * M_PI / 180) * (premier_tiers.x - second_tiers.x) + cos(60 * M_PI / 180) * (premier_tiers.y - second_tiers.y) + second_tiers.y);
-	nouveau_sommet.x = round((premier_tiers.x + second_tiers.x)*cos(60 * M_PI / 180) - (second_tiers.y - premier_tiers.y)*sin(60 * M_PI / 180));
-    nouveau_sommet.y = round((premier_tiers.y + second_tiers.y)*cos(60 * M_PI / 180) + (second_tiers.x - premier_tiers.x)*sin(60 * M_PI / 180));
+	nouveau_sommet.x = round((premier_tiers.x + second_tiers.x)*cos(300 * M_PI / 180) - (second_tiers.y - premier_tiers.y)*sin(300 * M_PI / 180));
+    nouveau_sommet.y = round((premier_tiers.y + second_tiers.y)*cos(300 * M_PI / 180) + (second_tiers.x - premier_tiers.x)*sin(300 * M_PI / 180));
 
     /*Ajoutons tout ce beau monde dans la liste chainée entre 
      *les points begin_vertex et end_vertex du segment       */
@@ -85,11 +86,21 @@ PLISTE generer_etapes(int n, PLISTE lp) {
     }
     i++;
   }
+}
 
-  return lp;
+PLISTE koch(int n, double x, double y, double c) {
+	PLISTE lp;
+	
+	lp = init_triangle(x,y,c);
+	if(n > 0) {
+		while(n>0){
+			generer_etapes(lp);
+			n--;
+		} 
+	} else {
+		printf("Aucune étape à génerer !\n");
+	}
+	
+	return lp;
 }
-/*
-void koch(short int n, double x, double y, double c) {
-  
-}
-*/
+

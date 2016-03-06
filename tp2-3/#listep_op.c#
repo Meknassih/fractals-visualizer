@@ -1,5 +1,4 @@
 #include "listep_op.h"
-#include "listep.h"
 
 PLISTE init_liste(double xx, double yy) {
   PLISTE new_list;
@@ -91,19 +90,19 @@ void afficher_liste(PLISTE l){
   } 
 }
 
-void dessiner_liste(Ez_window window, int thickness, PLISTE list, Ez_uint32 color) {
-	EPOINT *dernier_point, *avantdernier_point;
+void dessiner_liste(int thickness, PLISTE list, Ez_uint32 color) {
+  EPOINT *dernier_point, *avantdernier_point;
 
-	ez_set_color(color);
-	ez_set_thick(thickness);
+  ez_set_color(color);
+  ez_set_thick(1);
 
-	avantdernier_point = list;
-	dernier_point = list->next;
-	while (dernier_point != NULL) {
-		ez_draw_line(window, avantdernier_point->x , avantdernier_point->y, dernier_point->x, dernier_point->y);
-		avantdernier_point = dernier_point;
-		dernier_point = dernier_point->next;
-	}
-	ez_draw_line(window, avantdernier_point->x, avantdernier_point->y, list->x, list->y);
+  avantdernier_point = list;
+  dernier_point = list->next;
+  while (dernier_point != NULL) {
+    ez_draw_line(ev->win, avantdernier_point->x , avantdernier_point->y, dernier_point->x, dernier_point->y);
+    avantdernier_point = dernier_point;
+    dernier_point = dernier_point->next;
+  }
+  ez_draw_line(ev->win, avantdernier_point->x, avantdernier_point->y, list->x, list->y);
 }
 

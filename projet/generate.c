@@ -12,10 +12,15 @@ PLISTE init_triangle(Ez_window win, double c) {
   double x3_ex, y3_ex; //Au cas où nous aurions besoin des valeurs exactes
   int win_width, win_height;
   
+  /* Récupère la taille actuelle de la fenêtre                        */
   ez_window_get_size(win, &win_width, &win_height);
+  
+  /* On calcule la position du point inférieur gauche de façon à ce
+   * qu'il soit centré par rapport à la taille de la fenêtre récupérée
+   * juste avant                                                      */
   x1 = round((win_width/2.0) - (c/2.0));
   y1 = round((win_height/2.0) - (c * (sqrt(3)/6)));
-  printf("x1 %.0lf  y1 %.0lf\n", x1, y1);
+  printf("x1 %.0lf  y1 %.0lf\n", x1, y1); //DEBUG
   
   new_list = init_liste(x1, y1); //Crée une liste avec le point gauche
 

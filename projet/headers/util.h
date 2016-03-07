@@ -5,7 +5,11 @@
 #include <stdio.h>
 #include "ez-draw.h"
 
+//Paramètres initiaux
 #define FIRST_X 200
+#define WIDTH_MAIN 800
+#define HEIGHT_MAIN 480
+
 //Définition des nouveau types
 typedef struct EPOINT EPOINT; 
 
@@ -25,8 +29,20 @@ typedef enum {
 } bool;
 
 //COMMENT
+typedef enum {
+	PIXMAP, PPM
+} svmode;
+
+//COMMENT
 typedef struct {
   PLISTE list;
+  int n;
+  int configure_count;
+  double c;
+  int width, height;
+  svmode mode;
+  char *save_file;
+  bool loading;
 } Win_Data;
 
 /*
@@ -55,14 +71,14 @@ EPOINT * remove_after(EPOINT * elt);
  * INPUT: nom fichier d'ecriture, liste a ecrire
  * OUTPUT: --
  */ 
-void ecrire_liste(char * nf, PLISTE pl);
+void save_pixmap(char * nf, PLISTE lp, int width, int height);
 
 /*
  * Lecture d'une liste de points depuis fichier de nom nf
  * INPUT: nom fichier
  * OUTPUT: liste de points lus sur le fichier en entree.
  */  
-PLISTE lire_liste(char * nf);
+PLISTE load_pixmap(char * nf, int *width, int *height);
 
 /*
  * Affichage d'une liste de points dans la console
@@ -77,5 +93,20 @@ void afficher_liste(PLISTE l);
  * OUTPUT: --
  */
 void dessiner_liste(Ez_window window, int thickness, PLISTE list, Ez_uint32 color);
+
+/*
+ * Modifie la liste de point pour l'adapte à la nouvelle taille de
+ * la fenêtre
+ * INPUT:  
+ * OUTPUT: --
+ */
+PLISTE redimensionner_flocon(PLISTE pl, int width, int height, int *old_width, int *old_height);
+
+/*
+ * Sauvegarde d'une liste de points dans un fichier
+ * INPUT: 
+ * OUTPUT: --
+ */
+void save(PLISTE lp, char *nf, svmode mode, int width, int height);
 
 #endif

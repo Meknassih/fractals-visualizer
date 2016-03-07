@@ -5,15 +5,11 @@
 /*Génère le triangle de départ à partir du point inférieur
   gauche, le second point est à droite et le troisième est
   celui du haut                                           */
-PLISTE init_triangle(Ez_window win, double c) {
+PLISTE init_triangle(int win_width, int win_height, double c) {
   PLISTE new_list;
   EPOINT *second_point;
   double x1, y1, x2, y2, x3, y3;
   double x3_ex, y3_ex; //Au cas où nous aurions besoin des valeurs exactes
-  int win_width, win_height;
-  
-  /* Récupère la taille actuelle de la fenêtre                        */
-  ez_window_get_size(win, &win_width, &win_height);
   
   /* On calcule la position du point inférieur gauche de façon à ce
    * qu'il soit centré par rapport à la taille de la fenêtre récupérée
@@ -67,8 +63,6 @@ void generer_etapes(PLISTE lp) {
     /*Détérminons maintenant le sommet du futur triangle équilatéral
      *dont les deux sommets inférieurs sont les précédents (je n'ai
      *pas pu faire plus simple)                                     */
-    //nouveau_sommet.x = round(cos(60 * M_PI / 180) * (premier_tiers.x - second_tiers.x) - sin(60 * M_PI / 180) * (premier_tiers.y - second_tiers.y) + second_tiers.x);
-    //nouveau_sommet.y = round(sin(60 * M_PI / 180) * (premier_tiers.x - second_tiers.x) + cos(60 * M_PI / 180) * (premier_tiers.y - second_tiers.y) + second_tiers.y);
 	nouveau_sommet.x = round((premier_tiers.x + second_tiers.x)*cos(300 * M_PI / 180) - (second_tiers.y - premier_tiers.y)*sin(300 * M_PI / 180));
     nouveau_sommet.y = round((premier_tiers.y + second_tiers.y)*cos(300 * M_PI / 180) + (second_tiers.x - premier_tiers.x)*sin(300 * M_PI / 180));
 
@@ -98,19 +92,19 @@ void generer_etapes(PLISTE lp) {
   }
 }
 
-PLISTE koch(Ez_window win, int n, double c) {
-	PLISTE lp;
+PLISTE koch(int win_width, int win_height, int n, double c) {
+  PLISTE lp;
+  int i;
 	
-	lp = init_triangle(win ,c);
-	if(n > 0) {
-		while(n>0){
-			generer_etapes(lp);
-			n--;
-		} 
-	} else {
-		printf("Aucune étape à génerer !\n");
-	}
+  lp = init_triangle(win_width, win_height ,c);
+  if(n > 0) {
+    for(i=0; i<n; i++){
+      generer_etapes(lp);
+    } 
+  } else {
+    printf("Aucune étape à génerer !\n");
+  }
 	
-	return lp;
+  return lp;
 }
 

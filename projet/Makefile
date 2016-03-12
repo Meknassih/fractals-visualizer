@@ -12,16 +12,16 @@ all: projet
 projet: main.o generate.o util.o ez-draw.o
 	$(CC) ez-draw.o util.o generate.o main.o -o projet $(GFLAGS) $(MFLAGS)
 
-main.o: main.c
+main.o:
 	$(CC) $(CFLAGS) main.c
 
-generate.o: generate.c
+generate.o:
 	$(CC) $(CFLAGS) generate.c $(MFLAGS)
 
-util.o: util.c
+util.o:
 	$(CC) $(CFLAGS) util.c $(MFLAGS)
 
-ez-draw.o: ez-draw.c
+ez-draw.o:
 	$(CC) $(CFLAGS) ez-draw.c $(GFLAGS)
 
 clean: #Nettoie les fichier objets, temporaires, de restauration et l'exec

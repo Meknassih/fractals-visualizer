@@ -1,5 +1,5 @@
-#ifndef __UTIL__
-#define __UTIL__
+#ifndef __LPOINTOP__
+#define __LPOINTOP__
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -36,14 +36,13 @@ typedef enum {
 //COMMENT
 typedef struct {
   PLISTE list;
-  PLISTE list_zoom;
   int n;
   int configure_count;
   double c;
   int width, height;
   svmode mode;
   char *save_file;
-  bool zooming;
+  bool loading;
 } Win_Data;
 
 /*
@@ -110,24 +109,4 @@ PLISTE redimensionner_flocon(PLISTE pl, int width, int height, int *old_width, i
  */
 void save(PLISTE lp, char *nf, svmode mode, int width, int height);
 
-/*
- * Zoom sur un plan de la fenêtre
- * INPUT: 
- * OUTPUT: --
- */
-PLISTE zoom(int clic_x, int clic_y, int zoom_factor, Win_Data win1_data);
-
-/*
- * Translate la forme géométrique dans l'espace
- * INPUT: 
- * OUTPUT: --
- */
-PLISTE offset(PLISTE lp, double deltax, double deltay);
-
-/*
- * Renvoie la sous-liste incluse 
- * INPUT: 
- * OUTPUT: --
- */
-PLISTE list_from_frame(PLISTE lp, double x1, double y1, double x2, double y2);
 #endif

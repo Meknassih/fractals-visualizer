@@ -6,50 +6,79 @@
 
 void win1_on_expose(Ez_event *ev) {
   Win_Data *win1_data = ez_get_data(ev->win);
-  
-  dessiner_liste(ev->win, 1, win1_data->list, ez_blue);
+
+  if (win1_data->zooming)
+    dessiner_liste(ev->win, 1, win1_data->zoom_list, ez_blue, true);
+  else {
+    dessiner_liste(ev->win, 1, win1_data->list, ez_blue, false);
+    dessiner_frame(ev->win, 2, ez_grey);
+  }
 }
 
 void win1_on_configure(Ez_event *ev) {
-	Win_Data *win1_data = ez_get_data(ev->win);
+  Win_Data *win1_data = ez_get_data(ev->win);
 	
-	printf("ConfigureNotify ! %i\n", win1_data->configure_count++);
+  printf("ConfigureNotify ! %i\n", win1_data->configure_count++);
 	
-	win1_data->list = redimensionner_flocon(win1_data->list, ev->width, ev->height , &win1_data->width, &win1_data->height);
-	ez_set_data(ev->win, win1_data);
-	ez_send_expose(ev->win);
+  win1_data->list = redimensionner_flocon(win1_data->list, ev->width, ev->height , &win1_data->width, &win1_data->height);
+  ez_set_data(ev->win, win1_data);
+  ez_send_expose(ev->win);
 }
 
 void win1_on_keypress (Ez_event *ev) {
-	Win_Data *win1_data = ez_get_data(ev->win);
-	int *new_height, *new_width;
-	new_height = malloc(sizeof(int));
-	new_width = malloc(sizeof(int));
+  Win_Data *win1_data = ez_get_data(ev->win);
+  int *new_height, *new_width;
+  new_height = malloc(sizeof(int));
+  new_width = malloc(sizeof(int));
 	
-	switch (ev->key_sym) {
-		case XK_s:
-			save(win1_data->list, win1_data->save_file, win1_data->mode, win1_data->width, win1_data->height);
-			break;
-		case XK_l:
-			win1_data->list = load_pixmap("sauvegarde", new_width, new_height);
-			printf("SETTING WINDOW SIZE Width %d / Height %d\n", *new_width, *new_height);
-			win1_data->loading = 0; //Mode loading empêche le redimensionnement lorsque ConfigureNotify sera engendré par ez_window_set_size
-			win1_data->width = *new_width;
-			win1_data->height = *new_height;
-			ez_set_data(ev->win, win1_data);
-			ez_window_set_size(ev->win, *new_width, *new_height);
-			break;
-		case XK_i:
-			win1_data->list = koch(ev->win, win1_data->n , win1_data->c);
-			win1_data->width = WIDTH_MAIN;
-			win1_data->height = HEIGHT_MAIN;
-			win1_data->mode = PIXMAP;
-			win1_data->save_file = "sauvegarde";
-			win1_data->loading = 2;
-			ez_set_data(ev->win, win1_data);
-			ez_window_set_size(ev->win, WIDTH_MAIN, HEIGHT_MAIN);
-			break;
-	}
+  switch (ev->key_sym) {
+  case XK_s:
+    save(win1_data->list, win1_data->save_file, win1_data->mode, win1_data->width, win1_data->height);
+    break;
+  case XK_l:
+    win1_data->list = load_pixmap("sauvegarde", new_width, new_height);
+    printf("SETTING WINDOW SIZE Width %d / Height %d\n", *new_width, *new_height);
+    win1_data->width = *new_width;
+    win1_data->height = *new_height;
+    ez_set_data(ev->win, win1_data);
+    ez_window_set_size(ev->win, *new_width, *new_height);
+    break;
+  case XK_i:
+    win1_data->list = koch(ev->win, win1_data->n , win1_data->c);
+    win1_data->width = WIDTH_MAIN;
+    win1_data->height = HEIGHT_MAIN;
+    win1_data->mode = PIXMAP;
+    win1_data->save_file = "sauvegarde";
+    ez_set_data(ev->win, win1_data);
+    ez_window_set_size(ev->win, WIDTH_MAIN, HEIGHT_MAIN);
+    break;
+  }
+}
+
+void win1_on_button_press(Ez_event *ev) {
+  Win_Data *win_data = ez_get_data(ev->win);
+  
+  if (ev->mb == 1) {
+    if (zoom(win_data)) //Renverra faux si aucun point dans la frame
+      win_data->zooming = true;
+  } else if (ev->mb == 3) {
+    win_data->zooming = false;
+  }
+
+  ez_set_data(ev->win, win_data);
+  ez_send_expose(ev->win);
+}
+
+void win1_on_motion(Ez_event *ev) {
+  Win_Data *win_data = ez_get_data(ev->win);
+
+  win_data->x1_frame = ev->mx - (win_data->width/win_data->factor)/2;
+  win_data->y1_frame = ev->my - (win_data->height/win_data->factor)/2;
+win_data->x2_frame = ev->mx + (win_data->width/win_data->factor)/2;
+win_data->y2_frame = ev->my + (win_data->height/win_data->factor)/2;
+
+  ez_set_data(ev->win, win_data);
+  ez_send_expose(ev->win);
 }
 
 void win1_event(Ez_event *ev) {
@@ -58,11 +87,17 @@ void win1_event(Ez_event *ev) {
     win1_on_expose(ev);
     break;
   case ConfigureNotify:
-	win1_on_configure(ev);
-	break;
+    win1_on_configure(ev);
+    break;
   case KeyPress:
-	win1_on_keypress(ev);
-	break;
+    win1_on_keypress(ev);
+    break;
+  case ButtonPress:
+    win1_on_button_press(ev);
+    break;
+  case MotionNotify:
+    win1_on_motion(ev);
+    break;
   }
 }
 
@@ -74,11 +109,13 @@ int main(int argc, char *argv[]) {
     exit(1);
 
   window = ez_window_create (WIDTH_MAIN, HEIGHT_MAIN, "Projet Algorithmique", win1_event);
+  ez_window_dbuf(window, 1);
   win1_data.width = WIDTH_MAIN;
   win1_data.height = HEIGHT_MAIN;
   win1_data.mode = PIXMAP;
   win1_data.save_file = "sauvegarde";
-  win1_data.loading = 2;
+  win1_data.zooming = false;
+  win1_data.factor = 2;
   
   //DEBUG
   scanf("%d %lf",&win1_data.n ,&win1_data.c);

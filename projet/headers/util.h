@@ -1,5 +1,5 @@
-#ifndef __LPOINTOP__
-#define __LPOINTOP__
+#ifndef __UTIL__
+#define __UTIL__
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -9,6 +9,7 @@
 #define FIRST_X 200
 #define WIDTH_MAIN 800
 #define HEIGHT_MAIN 480
+#define MAX_ZOOM_PARTS 100
 
 //Définition des nouveau types
 typedef struct EPOINT EPOINT; 
@@ -35,7 +36,7 @@ typedef enum {
 
 //COMMENT
 typedef struct {
-  PLISTE list, zoom_list; //Liste de points pour la fractale + portion zoomée
+  PLISTE list, zoom_list[MAX_ZOOM_PARTS]; //Liste de points pour la fractale + portion zoomée
   int n; //Ordre de la fractale
   int configure_count; //Nombre de ConfigureNotify déclenchés
   double c; //Largeur du premier ordre
@@ -43,6 +44,7 @@ typedef struct {
   svmode mode; //Mode de sauvegarde (PIX, PPM)
   char *save_file; //Nom du fichier de sauvegarde sans ext
   bool zooming;
+  int zoom_part_count;
   int factor;
   int x1_frame, x2_frame, y1_frame, y2_frame;
 } Win_Data;
@@ -123,12 +125,26 @@ void save(PLISTE lp, char *nf, svmode mode, int width, int height);
  * INPUT: 
  * OUTPUT: faux si aucun point dans la frame
  */
-bool zoom(Win_Data *win_data);
+bool zoom(Win_Data *win_data, int mouse_x, int mouse_y);
 
 /*
- * Crée la liste de points en appliquant le zoom
+ * Crée la ou les liste de points sur lesquelles on zoom
  * INPUT: 
  * OUTPUT: --
  */
-PLISTE init_zoom(PLISTE lp, int factor, int x1_frame, int y1_frame, int x2_frame, int y2_frame);
+void init_zoom(Win_Data *win_data);
+
+/*
+ * Centre la ou les sous-listes de points concernées
+ * INPUT: 
+ * OUTPUT: --
+ */
+void center_points(Win_Data *win_data, int x_offset, int y_offset);
+
+/*
+ * Applique le zoom sur la ou les listes de points concernées
+ * INPUT: 
+ * OUTPUT: --
+ */
+void expand_points(Win_Data *win_data);
 #endif

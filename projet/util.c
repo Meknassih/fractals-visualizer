@@ -108,6 +108,7 @@ void afficher_liste(PLISTE l){
 
 void dessiner_liste(Ez_window window, int thickness, PLISTE list, Ez_uint32 color, bool zoom_mode) {
   EPOINT *dernier_point, *avantdernier_point;
+  int i=0; //DEBUG
 
   ez_set_color(color);
   ez_set_thick(thickness);
@@ -115,12 +116,23 @@ void dessiner_liste(Ez_window window, int thickness, PLISTE list, Ez_uint32 colo
   avantdernier_point = list;
   dernier_point = list->next;
   while (dernier_point != NULL) {
+    if (dernier_point->next == NULL) //DEBUG
+      ez_set_color(ez_red);
+    else if (i==0) //DEBUG
+      ez_set_color(ez_green);
+    else
+      ez_set_color(color);
     ez_draw_line(window, avantdernier_point->x , avantdernier_point->y, dernier_point->x, dernier_point->y);
     avantdernier_point = dernier_point;
     dernier_point = dernier_point->next;
+
+    i++; //DEBUG
   }
-  if (!zoom_mode)
+  
+  if (!zoom_mode) {
+    ez_set_color(color);
     ez_draw_line(window, avantdernier_point->x, avantdernier_point->y, list->x, list->y);
+  }
 }
 
 void dessiner_frame(Ez_window window, int thickness, Ez_uint32 color) {
@@ -183,27 +195,54 @@ void load(PLISTE lp, char *nf, svmode mode, int *width, int *height) {
   free(nfext);
 }
 
-bool zoom(Win_Data *win_data) {
-  win_data->zoom_list = init_zoom(win_data->list, win_data->factor, win_data->x1_frame, win_data->y1_frame, win_data->x2_frame, win_data->y2_frame);
+bool zoom(Win_Data *win_data, int mouse_x, int mouse_y) {
+  init_zoom(win_data);
+  center_points(win_data, (win_data->width/2)-mouse_x, (win_data->height/2)-mouse_y);
+  expand_points(win_data);
+  
   if (win_data->zoom_list == NULL)
     return false;
   else
     return true;
 }
 
-PLISTE init_zoom(PLISTE lp, int factor, int x1_frame, int y1_frame, int x2_frame, int y2_frame) {
-  int xc_frame, yc_frame; //Coordonnées du centre de la frame
-  int i=1; //DEBUG
-  EPOINT *current_point, *last_point;
-  PLISTE zoom_list;
+void init_zoom(Win_Data *win_data) {
+  PLISTE lp = win_data->list;
+  //int factor = win_data->factor;
+  int x1_frame = win_data->x1_frame;
+  int y1_frame = win_data->y1_frame;
+  int x2_frame = win_data->x2_frame;
+  int y2_frame = win_data->y2_frame;
+  //int xc_frame, yc_frame; //Coordonnées du centre de la frame
+  //int i=1; //DEBUG
+  EPOINT *current_point, *last_point = NULL;
+  PLISTE zoom_list[MAX_ZOOM_PARTS];
+  bool searching_first_point = true;
 
   current_point = lp;
   //Cherchons le premier point de la fractale dans la frame
   while (current_point != NULL) {
-    if (current_point->x > x1_frame && current_point->x < x2_frame && current_point->y > y1_frame && current_point->y < y2_frame)
-      break;
+    if (current_point->x > x1_frame && current_point->x < x2_frame && current_point->y > y1_frame && current_point->y < y2_frame) { //Si le point est dans la frame
+      if (searching_first_point) { //Si c'est le premier point d'une portion du flocon
+	printf("First point found, creating list\n");
+	zoom_list[win_data->zoom_part_count] = init_liste(current_point->x, current_point->y);
+	last_point = zoom_list[win_data->zoom_part_count];
+	win_data->zoom_part_count++;
+	searching_first_point = false;
+      } else { //Si c'est un des points suivants le premier
+	printf("Multi point found, inserting into list\n");
+	last_point = insert_after(last_point, current_point->x, current_point->y);
+      }
+    } else {
+      if (last_point != NULL) { //Si le point précédent est dans la frame
+	printf("End of list, searching new part\n");
+	last_point = NULL;
+	searching_first_point = true;
+      }
+    }
     current_point = current_point->next;
   }
+  /*
   if (current_point == NULL) { //La fractale ne passe pas par la frame
     printf("Warning: no vertex intersect with zooming frame\n");
     return NULL;
@@ -225,28 +264,55 @@ PLISTE init_zoom(PLISTE lp, int factor, int x1_frame, int y1_frame, int x2_frame
       current_point = current_point->next;
     }
   }
+*/
+  //On recopie le tableau de sous-listes dans la structure de données
+  memcpy(win_data->zoom_list, zoom_list, sizeof(PLISTE)*100);
+}
 
-  /*Maintenant, aggrandissons la portion du flocon stockée dans la sous-liste
-  xc_frame = (x2_frame - x1_frame)/2; //Centre x et ..
-  yc_frame = (y2_frame - y1_frame)/2; //..y de la frame (mx,my)
-  current_point = zoom_list;
-  while (current_point != NULL) {
-    if (current_point->x < xc_frame) { //Gauche
-      current_point->x -= (xc_frame - current_point->x)*factor;
-    }
-    if (current_point->x > xc_frame) { //Droite
-      current_point->x += (current_point->x - xc_frame)*factor;
-    }
-
-    if (current_point->y < yc_frame) { //Haut
-      current_point->y -= (yc_frame - current_point->y)*factor;
-    }
-    if (current_point->y > yc_frame) { //Bas
-      current_point->y += (current_point->y - yc_frame)*factor;
-    }
+void center_points(Win_Data *win_data, int x_offset, int y_offset) {
+  EPOINT *current_point;
+  int i;
+  
+  for (i=0; i<win_data->zoom_part_count; i++) {
+    printf("Centering zoom part %d\n", i);
+    current_point = win_data->zoom_list[i];
     
-    current_point = current_point->next;
-  }*/
+    while (current_point != NULL) {
+      current_point->x += x_offset;
+      current_point->y += y_offset;
+      current_point = current_point->next;
+    }
+  }
+}
 
-  return zoom_list;
+void expand_points(Win_Data *win_data) {
+  EPOINT *current_point;
+  int xc_window = win_data->width/2;
+  int yc_window = win_data->height/2;
+  int i;
+  
+  /*Maintenant, aggrandissons la ou les portions du flocon stockées dans
+   *le tableau de sous-listes zoom_list                                 */
+  for (i=0; i<win_data->zoom_part_count; i++) {
+    printf("Expanding zoom part %d\n", i);
+    current_point = win_data->zoom_list[i];
+    while (current_point != NULL) {
+      if (current_point->x < xc_window) { //Gauche
+	current_point->x -= (xc_window - current_point->x)*(win_data->factor/2);
+      }
+      if (current_point->x > xc_window) { //Droite
+	current_point->x += (current_point->x - xc_window)*(win_data->factor/2);
+      }
+
+      if (current_point->y < yc_window) { //Haut
+	current_point->y -= (yc_window - current_point->y)*(win_data->factor/2);
+      }
+      if (current_point->y > yc_window) { //Bas
+	current_point->y += (current_point->y - yc_window)*(win_data->factor/2);
+      }
+    
+      current_point = current_point->next;
+    }
+  }
+
 }

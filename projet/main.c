@@ -6,13 +6,19 @@
 
 void win1_on_expose(Ez_event *ev) {
   Win_Data *win1_data = ez_get_data(ev->win);
+  int i;
 
   if (win1_data->zooming)
-    dessiner_liste(ev->win, 1, win1_data->zoom_list, ez_blue, true);
+    for (i=0; i<win1_data->zoom_part_count; i++)
+      dessiner_liste(ev->win, 1, win1_data->zoom_list[i], ez_blue, true);
   else {
     dessiner_liste(ev->win, 1, win1_data->list, ez_blue, false);
     dessiner_frame(ev->win, 2, ez_grey);
   }
+
+  ez_set_thick(3); //DEBUG
+  ez_set_color(ez_red); //DEBUG
+  ez_draw_point(ev->win, win1_data->width/2, win1_data->height/2); //DEBUG
 }
 
 void win1_on_configure(Ez_event *ev) {
@@ -57,12 +63,22 @@ void win1_on_keypress (Ez_event *ev) {
 
 void win1_on_button_press(Ez_event *ev) {
   Win_Data *win_data = ez_get_data(ev->win);
+  int i;
   
-  if (ev->mb == 1) {
-    if (zoom(win_data)) //Renverra faux si aucun point dans la frame
+  switch (ev->mb) {
+  case 1: //Clic gauche
+    if (zoom(win_data, ev->mx, ev->my)) //Renverra faux si aucun point dans la frame
       win_data->zooming = true;
-  } else if (ev->mb == 3) {
+    break;
+  case 3: //Clic droit
+    //Réinitialise les données de zoom
     win_data->zooming = false;
+    win_data->zoom_part_count = 0;
+    for (i=0; i<win_data->zoom_part_count; i++) {
+      free(win_data->zoom_list[i]);
+      win_data->zoom_list[i] = NULL;
+    }
+    break;
   }
 
   ez_set_data(ev->win, win_data);
@@ -74,8 +90,8 @@ void win1_on_motion(Ez_event *ev) {
 
   win_data->x1_frame = ev->mx - (win_data->width/win_data->factor)/2;
   win_data->y1_frame = ev->my - (win_data->height/win_data->factor)/2;
-win_data->x2_frame = ev->mx + (win_data->width/win_data->factor)/2;
-win_data->y2_frame = ev->my + (win_data->height/win_data->factor)/2;
+  win_data->x2_frame = ev->mx + (win_data->width/win_data->factor)/2;
+  win_data->y2_frame = ev->my + (win_data->height/win_data->factor)/2;
 
   ez_set_data(ev->win, win_data);
   ez_send_expose(ev->win);
@@ -104,6 +120,7 @@ void win1_event(Ez_event *ev) {
 int main(int argc, char *argv[]) {
   Ez_window window;
   Win_Data win1_data;
+  int i;
 
   if (ez_init() < 0)
     exit(1);
@@ -115,7 +132,11 @@ int main(int argc, char *argv[]) {
   win1_data.mode = PIXMAP;
   win1_data.save_file = "sauvegarde";
   win1_data.zooming = false;
-  win1_data.factor = 2;
+  win1_data.factor = 4;
+  win1_data.zoom_part_count = 0;
+  for (i=0; i<MAX_ZOOM_PARTS; i++) {
+    win1_data.zoom_list[i] = NULL;
+  }
   
   //DEBUG
   scanf("%d %lf",&win1_data.n ,&win1_data.c);

@@ -142,6 +142,32 @@ void dessiner_frame(Ez_window window, int thickness, Ez_uint32 color) {
   ez_set_thick(thickness);
 
   ez_draw_rectangle(window, win_data->x1_frame, win_data->y1_frame, win_data->x2_frame, win_data->y2_frame);
+
+  ez_set_thick(1);
+  ez_draw_rectangle(window, win_data->x1_frame-FRAME_MARGIN, win_data->y1_frame-FRAME_MARGIN, win_data->x2_frame+FRAME_MARGIN, win_data->y2_frame+FRAME_MARGIN);
+}
+
+Win_Data init_general_settings(void) {
+  Win_Data win_data;
+  int i;
+  
+  win_data.width = WIDTH_MAIN;
+  win_data.height = HEIGHT_MAIN;
+  win_data.mode = PIXMAP;
+  win_data.n = ORDRE_INIT;
+  win_data.c = TAILLE_INIT;
+  win_data.save_file = "sauvegarde";
+  win_data.configure_count = 0;
+  win_data.zooming = false;
+  win_data.factor = FACTOR_INIT;
+  win_data.zoom_part_count = 0;
+  for (i=0; i<MAX_ZOOM_PARTS; i++)
+    win_data.zoom_list[i] = NULL;
+
+  win_data.buf = malloc(sizeof(char)*BUF_MAX);
+  win_data.temp_buf = malloc(sizeof(char)*BUF_MAX);
+
+  return win_data;
 }
 
 PLISTE redimensionner_flocon(PLISTE lp, int width, int height, int *old_width, int *old_height){
@@ -209,10 +235,10 @@ bool zoom(Win_Data *win_data, int mouse_x, int mouse_y) {
 void init_zoom(Win_Data *win_data) {
   PLISTE lp = win_data->list;
   //int factor = win_data->factor;
-  int x1_frame = win_data->x1_frame;
-  int y1_frame = win_data->y1_frame;
-  int x2_frame = win_data->x2_frame;
-  int y2_frame = win_data->y2_frame;
+  int x1_frame = win_data->x1_frame - FRAME_MARGIN;
+  int y1_frame = win_data->y1_frame - FRAME_MARGIN;
+  int x2_frame = win_data->x2_frame + FRAME_MARGIN;
+  int y2_frame = win_data->y2_frame + FRAME_MARGIN;
   //int xc_frame, yc_frame; //Coordonnées du centre de la frame
   //int i=1; //DEBUG
   EPOINT *current_point, *last_point = NULL;
@@ -298,17 +324,17 @@ void expand_points(Win_Data *win_data) {
     current_point = win_data->zoom_list[i];
     while (current_point != NULL) {
       if (current_point->x < xc_window) { //Gauche
-	current_point->x -= (xc_window - current_point->x)*(win_data->factor/2);
+	current_point->x -= (xc_window - current_point->x)*(win_data->factor-1);
       }
       if (current_point->x > xc_window) { //Droite
-	current_point->x += (current_point->x - xc_window)*(win_data->factor/2);
+	current_point->x += (current_point->x - xc_window)*(win_data->factor-1);
       }
 
       if (current_point->y < yc_window) { //Haut
-	current_point->y -= (yc_window - current_point->y)*(win_data->factor/2);
+	current_point->y -= (yc_window - current_point->y)*(win_data->factor-1);
       }
       if (current_point->y > yc_window) { //Bas
-	current_point->y += (current_point->y - yc_window)*(win_data->factor/2);
+	current_point->y += (current_point->y - yc_window)*(win_data->factor-1);
       }
     
       current_point = current_point->next;

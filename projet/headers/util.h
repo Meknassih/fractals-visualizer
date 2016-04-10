@@ -4,12 +4,18 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "ez-draw.h"
+#include "ez-image.h"
 
 //Paramètres initiaux
 #define FIRST_X 200
 #define WIDTH_MAIN 800
 #define HEIGHT_MAIN 480
 #define MAX_ZOOM_PARTS 100
+#define FRAME_MARGIN 15
+#define FACTOR_INIT 4
+#define ORDRE_INIT 6
+#define TAILLE_INIT 300
+#define BUF_MAX 20
 
 //Définition des nouveau types
 typedef struct EPOINT EPOINT; 
@@ -31,7 +37,7 @@ typedef enum {
 
 //COMMENT
 typedef enum {
-	PIXMAP, PPM
+  PIXMAP, PPM
 } svmode;
 
 //COMMENT
@@ -43,10 +49,17 @@ typedef struct {
   int width, height; //Dimensions de la fenêtre à tout moment
   svmode mode; //Mode de sauvegarde (PIX, PPM)
   char *save_file; //Nom du fichier de sauvegarde sans ext
+  char *temp_buf, *buf;
   bool zooming;
   int zoom_part_count;
   int factor;
   int x1_frame, x2_frame, y1_frame, y2_frame;
+  Ez_image *image_background; // image du background
+  Ez_image *image_button[14]; // tableau d'images de tous les bouttons
+  Ez_image *image_active_button[14]; // Tableau d'images des bouttons actives
+  int **bptab; // Tableau regroupant tous les cordonnées des points des bouttons
+  int count_buttons; // Nombres de bouttons dans la fênetre
+  bool *active_button; // Verifie si le boutton est active ou pas
 } Win_Data;
 
 /*
@@ -104,6 +117,14 @@ void dessiner_liste(Ez_window window, int thickness, PLISTE list, Ez_uint32 colo
  * OUTPUT: --
  */
 void dessiner_frame(Ez_window window, int thickness, Ez_uint32 color);
+
+/*
+ * Initialise les paramètres généraux de base (facteur de zoom, taille de
+ * la fenêtre, ...)
+ * INPUT: --
+ * OUTPUT: Structure initialisée partiellement
+ */
+Win_Data init_general_settings(void);
 
 /*
  * Modifie la liste de point pour l'adapte à la nouvelle taille de

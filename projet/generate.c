@@ -99,18 +99,18 @@ void generer_etapes(PLISTE lp) {
 }
 
 PLISTE koch(Ez_window win, int n, double c) {
-	PLISTE lp;
+  PLISTE lp;
 	
-	lp = init_triangle(win ,c);
-	if(n > 0) {
-		while(n>0){
-			generer_etapes(lp);
-			n--;
-		} 
-	} else {
-		printf("Aucune étape à génerer !\n");
-	}
+  lp = init_triangle(win ,c);
+  if(n > 0) {
+    while(n>0){
+      generer_etapes(lp);
+      n--;
+    } 
+  } else {
+    printf("Aucune étape à génerer !\n");
+  }
 	
-	return lp;
+  return lp;
 }
 

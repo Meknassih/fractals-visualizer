@@ -1,7 +1,8 @@
-#include "headers/interface.h"
 #include "headers/ez-draw.h"
 #include "headers/ez-image.h"
 #include "headers/util.h"
+#include "headers/generate.h"
+#include "headers/interface.h"
 
 
 // Alloue de la mémoire pour un tableau 'l' ligne, 4 colonnes
@@ -98,7 +99,8 @@ void init_buttons(Win_Data *win1_data){
   win1_data->count_buttons = 0;
   win1_data->active_button = malloc(sizeof(int)*(14));
   for(i=0; i<14; i++) win1_data->active_button[i] = 0;
-  win1_data->active_button[10] = 1;
+  win1_data->active_button[0] = 1; // Koch par défaut
+  win1_data->active_button[10] = 1; // Pix par défaut
   create_buttons(&win1_data->count_buttons,  win1_data->bptab, 2, 120, 35, 10, 25);
   create_buttons(&win1_data->count_buttons,  win1_data->bptab, 3,  80, 35, 10, 90);
   create_buttons(&win1_data->count_buttons,  win1_data->bptab, 1, 240, 35, 10, 125);
@@ -230,10 +232,17 @@ void execute_button_press(Ez_window drawing_win, button id_button){
   case B_KOCH:
     win1_data->active_button[B_KOCH] = 1;
     win1_data->active_button[B_MANDELBROT] = 0;
+    win1_data->list = koch(drawing_window, win1_data->n , win1_data->c);
     break;
   case B_MANDELBROT:
     win1_data->active_button[B_KOCH] = 0;
     win1_data->active_button[B_MANDELBROT] = 1;
+    
+    Complexe z0; //DEBUG
+    z0.reel = 0; //DEBUG
+    z0.imaginaire = 0; //DEBUG
+    win1_data->mandelbrot = generate_mandelbrot(z0, 0.0, (double)win1_data->width, 0.0, (double)win1_data->height);
+    ez_send_expose(drawing_window);
     break;
 		
     // Choix animations

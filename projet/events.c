@@ -9,19 +9,35 @@
  ****************************************************/
 void win1_on_expose(Ez_event *ev) {
   Win_Data *win1_data = ez_get_data(ev->win);
-  int i;
+  int i, j;
 
-  if (win1_data->zooming)
-    for (i=0; i<win1_data->zoom_part_count; i++)
-      dessiner_liste(ev->win, 1, win1_data->zoom_list[i], ez_blue, true);
-  else {
-    dessiner_liste(ev->win, 1, win1_data->list, ez_blue, false);
-    dessiner_frame(ev->win, 2, ez_grey);
+  if(win1_data->active_button[0]) {
+	  if (win1_data->zooming)
+		for (i=0; i<win1_data->zoom_part_count; i++)
+		  dessiner_liste(ev->win, 1, win1_data->zoom_list[i], ez_blue, true);
+	  else {
+		dessiner_liste(ev->win, 1, win1_data->list, ez_blue, false);
+		dessiner_frame(ev->win, 2, ez_grey);
+	  }
+
+	  ez_set_thick(3); //DEBUG
+	  ez_set_color(ez_red); //DEBUG
+	  ez_draw_point(ev->win, win1_data->width/2, win1_data->height/2); //DEBUG
+ } else if (win1_data->active_button[1]) {
+	  Image *mandelbrot = win1_data->mandelbrot;
+	  Pixel ***plan = mandelbrot->plan;
+	  
+	  
+	  for (i=0; i<mandelbrot->height; i++) {
+		for (j=0; j<mandelbrot->width; j++) {
+			ez_set_color(ez_get_RGB(plan[i][j]->r, plan[i][j]->g, plan[i][j]->b));
+			ez_set_thick(1);
+			ez_draw_point(ev->win, i, j);
+			//DEBUG
+			printf("t : Mandelbrot : drawing point (%d, %d) color %d\n", i, j, ez_get_RGB(plan[i][j]->r, plan[i][j]->g, plan[i][j]->b));
+		}  
+	}
   }
-
-  ez_set_thick(3); //DEBUG
-  ez_set_color(ez_red); //DEBUG
-  ez_draw_point(ev->win, win1_data->width/2, win1_data->height/2); //DEBUG
 }
 
 void win1_on_configure(Ez_event *ev) {
@@ -177,4 +193,6 @@ void win2_event(Ez_event *ev) {
     break;*/
   }
 }
+
+
 

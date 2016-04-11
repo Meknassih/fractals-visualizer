@@ -9,8 +9,8 @@ MFLAGS=-lm
 
 all: projet
 
-projet: ez-draw.o ez-image.o interface.o generate.o util.o events.o main.o
-	$(CC) ez-draw.o ez-image.o interface.o generate.o util.o events.o main.o -o projet $(GFLAGS) $(MFLAGS)
+projet: ez-draw.o ez-image.o cplx.o generate.o interface.o util.o events.o main.o
+	$(CC) ez-draw.o ez-image.o cplx.o generate.o interface.o util.o events.o main.o -o projet $(GFLAGS) $(MFLAGS)
 
 ez-draw.o: ez-draw.c headers/ez-draw.h
 	$(CC) $(CFLAGS) ez-draw.c $(GFLAGS)
@@ -18,14 +18,17 @@ ez-draw.o: ez-draw.c headers/ez-draw.h
 ez-image.o: ez-image.c headers/ez-image.h
 	$(CC) $(CFLAGS) ez-image.c $(GFLAGS)
 
+cplx.o: cplx.c headers/cplx.h
+	$(CC) $(CFLAGS) cplx.c $(MFLAGS)
+
+generate.o: generate.c headers/generate.h
+	$(CC) $(CFLAGS) generate.c $(MFLAGS)
+
 interface.o: interface.c headers/interface.h
 	$(CC) $(CFLAGS) interface.c $(MFLAGS)
 
 util.o: util.c headers/util.h
 	$(CC) $(CFLAGS) util.c $(MFLAGS)
-
-generate.o: generate.c headers/generate.h
-	$(CC) $(CFLAGS) generate.c $(MFLAGS)
 
 events.o: events.c headers/events.h
 	$(CC) $(CFLAGS) events.c $(MFLAGS)

@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "ez-draw.h"
 #include "ez-image.h"
+#include "cplx.h"
 
 //Paramètres initiaux
 #define FIRST_X 200
@@ -13,7 +14,7 @@
 #define MAX_ZOOM_PARTS 100
 #define FRAME_MARGIN 15
 #define FACTOR_INIT 4
-#define ORDRE_INIT 6
+#define ORDRE_INIT 2
 #define TAILLE_INIT 300
 #define BUF_MAX 20
 
@@ -40,6 +41,32 @@ typedef enum {
   PIXMAP, PPM
 } svmode;
 
+/* **************************************************************** */
+/* ************************* Période 2 **************************** */
+/* **************************************************************** */
+#define MAX_ITER 20
+#define L_CONVERGENCE 4
+
+struct Pixel {
+	Ez_uint8 r;
+	Ez_uint8 g;
+	Ez_uint8 b;
+};
+
+typedef struct Pixel Pixel;
+
+struct Image {
+	Pixel ***plan;
+	int width;
+	int height;
+};
+
+typedef struct Image Image;
+
+/* **************************************************************** */
+/* ************************ Fin Période 2 ************************* */
+/* **************************************************************** */
+
 //COMMENT
 typedef struct {
   PLISTE list, zoom_list[MAX_ZOOM_PARTS]; //Liste de points pour la fractale + portion zoomée
@@ -60,6 +87,7 @@ typedef struct {
   int **bptab; // Tableau regroupant tous les cordonnées des points des bouttons
   int count_buttons; // Nombres de bouttons dans la fênetre
   bool *active_button; // Verifie si le boutton est active ou pas
+  Image *mandelbrot; //Matrice de pixels correspondant à l'ensemble de Mandelbrot
 } Win_Data;
 
 /*
@@ -168,4 +196,14 @@ void center_points(Win_Data *win_data, int x_offset, int y_offset);
  * OUTPUT: --
  */
 void expand_points(Win_Data *win_data);
+
+/* **************************************************************** */
+/* ************************ Période 2 ***************************** */
+/* **************************************************************** */
+
+Pixel* init_pixel(int R, int G, int B);
+Image* init_image(int width, int height);
+void set_pixel(Image * im, Pixel * p, int lig, int col);
+void free_image(Image *im);
+
 #endif

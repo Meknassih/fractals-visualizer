@@ -163,6 +163,7 @@ Win_Data init_general_settings(void) {
   win_data.zoom_part_count = 0;
   for (i=0; i<MAX_ZOOM_PARTS; i++)
     win_data.zoom_list[i] = NULL;
+  win_data.mandelbrot = init_image(WIDTH_MAIN, HEIGHT_MAIN);
 
   win_data.buf = malloc(sizeof(char)*BUF_MAX);
   win_data.temp_buf = malloc(sizeof(char)*BUF_MAX);
@@ -341,4 +342,62 @@ void expand_points(Win_Data *win_data) {
     }
   }
 
+}
+
+/* **************************************************************** */
+/* ************************ Période 2 ***************************** */
+/* **************************************************************** */
+
+Pixel* init_pixel(int R, int G, int B) {
+	Pixel* pix;
+	
+	pix = malloc(sizeof(Pixel));
+	
+	pix->r = R;
+	pix->g = G;
+	pix->b = B;
+	
+	return pix;
+}
+
+Image* init_image(int width, int height) {
+	Image* img;
+	int i,j;
+	img = malloc(sizeof(Image));
+	
+	img->plan = malloc(sizeof(Pixel**)*height);
+	for (i=0; i<height; i++) {
+		img->plan[i] = malloc(sizeof(Pixel*)*width);
+	}
+	
+	for (i=0; i<height; i++) {
+		for (j=0; j<width; j++) {
+			img->plan[i][j] = init_pixel(255, 255, 255);
+		}
+	}
+	
+	img->width = WIDTH_MAIN;
+	img->height = HEIGHT_MAIN;
+	
+	return img;
+}
+
+void set_pixel(Image * img, Pixel * p, int lig, int col) {
+	img->plan[lig][col] = p;
+}
+
+void free_image(Image *img) {
+	int i, j;
+	
+	for (i=0; i<img->height; i++) {
+		for (j=0; j<img->width; j++) {
+			free(img->plan[i][j]);
+		}
+	}
+	
+	for (i=0; i<img->height; i++) {
+		free(img->plan[i]);
+	}
+	
+	free(img->plan);
 }

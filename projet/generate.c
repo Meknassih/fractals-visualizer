@@ -1,6 +1,8 @@
 #include <math.h>
 #include "headers/util.h"
+#include "headers/cplx.h"
 #include "headers/generate.h"
+
 
 /*Génère le triangle de départ à partir du point inférieur
   gauche, le second point est à droite et le troisième est
@@ -114,3 +116,90 @@ PLISTE koch(Ez_window win, int n, double c) {
   return lp;
 }
 
+/* **************************************************************** */
+/* ************************ Période 2 ***************************** */
+/* **************************************************************** */
+
+Complexe*** convertir_complexe(int width, int height) {
+	int i,j;
+	Complexe ***plan_complexe;
+	
+	plan_complexe = malloc(sizeof(Complexe**)*height);
+	for (i=0; i<height; i++) {
+		plan_complexe[i] = malloc(sizeof(Complexe*)*width);
+	}
+	for (i=0; i<height; i++) {
+		for (j=0; j<width; j++) {
+			plan_complexe[i][j] = create_complexe((double)i, (double)j);
+		}
+	}
+
+	return plan_complexe;
+}
+
+double** convergence(Complexe ***plan_complexe, Complexe z0, int width, int height) {
+	int k=1,i,j;
+	double **plan_divergence;
+	Complexe *z1,*z2,*z_pow;
+	z1 = create_complexe(z0.reel, z0.imaginaire);
+	z2 = create_complexe(0,0);
+	z_pow = create_complexe(0,0); // Z(n-1) au carrée
+	
+	// Initialisation tableau plan_divergence
+
+	plan_divergence = malloc(sizeof(double*)*height);
+	for (i=0; i<height; i++) {
+		plan_divergence[i] = malloc(sizeof(double)*width);
+	}
+	
+	// Calcul de divergence
+	for (i=0; i<height; i++) {
+		for (j=0; j<width; j++) { 
+			
+			while(k<=MAX_ITER) {
+				z_pow = mul_cplx(z1,z1);
+				z2 = add_cplx(z_pow,plan_complexe[i][j]);
+				
+				if(abs_cplx(z2)<=L_CONVERGENCE) {
+					k++;
+					free(z1);
+					z1 = create_complexe(z2->reel,z2->imaginaire); 
+				 } else {
+					plan_divergence[i][j] = k;
+					break;
+				 }
+			}
+			if (k>MAX_ITER) plan_divergence[i][j] = k; 
+			
+		}
+	}
+	
+	free(z1);
+	free(z2);
+	free(z_pow);
+	
+	return plan_divergence;
+}
+
+Image* generate_mandelbrot(Complexe z0, double xmin, double xmax, double ymin, double ymax) {
+	Complexe ***plan_complexe;
+	double **plan_divergence;
+	int i, j;
+	Image *img;
+	img = init_image(xmax-xmin, ymax-ymin);
+	
+	plan_complexe = convertir_complexe(img->width, img->height); // Normalement ça fonctione parfaitement
+	plan_divergence = convergence(plan_complexe, z0, img->width, img->height); // ça pose un problème, ça renvoie tjr la meme valeur k
+	
+	for (i=0; i<img->height; i++) {
+		for (j=0; j<img->width; j++) {
+			Pixel* pix_temp = init_pixel(255,255,255);
+			printf("plan_divergence[%d][%d] = %lf\n", i,j, plan_divergence[i][j]); // Debug
+			ez_HSV_to_RGB((360/MAX_ITER)*plan_divergence[i][j], 1, 1, &pix_temp->r, &pix_temp->g, &pix_temp->b);
+			printf("r : %d, g : %d, b : %d\n", pix_temp->r, pix_temp->g, pix_temp->b); // Debug
+			set_pixel(img, pix_temp, i, j);
+		}
+	}
+	
+	return img;
+}

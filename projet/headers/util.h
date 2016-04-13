@@ -9,8 +9,8 @@
 
 //Paramètres initiaux
 #define FIRST_X 200
-#define WIDTH_MAIN 800
-#define HEIGHT_MAIN 480
+#define WIDTH_MAIN 400
+#define HEIGHT_MAIN 400
 #define MAX_ZOOM_PARTS 100
 #define FRAME_MARGIN 15
 #define FACTOR_INIT 4

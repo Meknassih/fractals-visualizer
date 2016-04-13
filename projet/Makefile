@@ -1,11 +1,24 @@
-#Compiler
-CC=gcc
-#Common compiling flags
-CFLAGS=-c -Wall
-#Graphic libraries
-GFLAGS=-lX11 -lXext
-#Math library
-MFLAGS=-lm
+ifeq ($(SYSTYPE),UNIX)
+    # Unix/X11 systems (linux, Mac OS X, Cygwin, etc)
+    #Compiler
+	CC     = gcc
+	#Common compiling flags
+	CFLAGS = -c -Wall
+	#Graphic libraries
+	GFLAGS = -lX11 -lXext
+	#Math library
+	MFLAGS = -lm
+	#Cleaning command
+	CL = rm projet 
+
+else ifeq ($(SYSTYPE),WIN32)
+    # Windows, all versions
+    CC     = gcc
+    CFLAGS = -Wall -c
+    GFLAGS = -lgdi32 -lmsimg32
+    CL = del projet.exe 
+
+endif
 
 all: projet
 
@@ -37,4 +50,4 @@ main.o: main.c
 	$(CC) $(CFLAGS) main.c
 
 clean: #Nettoie les fichier objets, temporaires, de restauration et l'exec
-	rm *.o *~ *# projet 
+	$(CL) *.o *~

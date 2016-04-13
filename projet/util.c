@@ -1,5 +1,6 @@
-#include "headers/util.h"
 #include "headers/ez-draw.h"
+#include "headers/util.h"
+#include "headers/interface.h"
 
 PLISTE init_liste(double xx, double yy) {
   PLISTE new_list;
@@ -403,7 +404,7 @@ void free_image(Image *img) {
 }
 
 void print_mandelbrot_julia(Ez_window window, int thickness, Image *fractale, bool isJulia) { // isJulia pas nécéssaire, à retirer
-	int i,j;
+	int i,j, progression_x;
 	ez_set_thick(thickness);
 	Pixel ***plan = fractale->plan;
 	for (i=0; i<fractale->height; i++) {
@@ -411,11 +412,21 @@ void print_mandelbrot_julia(Ez_window window, int thickness, Image *fractale, bo
 			ez_set_color(ez_get_RGB(plan[i][j]->r, plan[i][j]->g, plan[i][j]->b));
 			ez_set_thick(1);
 			ez_draw_point(window, i, j);
-			//DEBUG
+			/*/DEBUG
 			if(isJulia)
 			printf("Julia : drawing point (%d, %d) color %d\n", i, j, ez_get_RGB(plan[i][j]->r, plan[i][j]->g, plan[i][j]->b));
 			else
-			printf("Mandelbrot : drawing point (%d, %d) color %d\n", i, j, ez_get_RGB(plan[i][j]->r, plan[i][j]->g, plan[i][j]->b));
+			printf("Mandelbrot : drawing point (%d, %d) color %d\n", i, j, ez_get_RGB(plan[i][j]->r, plan[i][j]->g, plan[i][j]->b));*/
 		}
+    //Barre de progression avec son contour
+    progression_x = (int)((double)((double)WIDTH_UI/(double)fractale->height)*i);
+    ez_set_color(ez_green);
+    ez_set_thick(1);
+    ez_fill_rectangle(ui_window, 0, 0, progression_x, 5);
+    ez_set_color(ez_black);
+    ez_draw_line(ui_window, 0, 6, progression_x, 6);
+    ez_draw_line(ui_window, progression_x+1, 0, progression_x+1, 6);
+    ez_send_expose(ui_window);
+    //printf("%d%%\n", (int)((double)((double)WIDTH_UI/(double)fractale->height)*i)); //DEBUG progression
 	}
 }

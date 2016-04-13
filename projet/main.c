@@ -27,6 +27,7 @@ int main(int argc, char *argv[]) {
   win1_data.list = koch(drawing_window, win1_data.n , win1_data.c);
   
   ez_window_dbuf(drawing_window, 1);
+  ez_window_dbuf(ui_window, 1);
 
   ez_set_data(drawing_window, &win1_data);
 

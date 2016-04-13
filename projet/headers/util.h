@@ -18,6 +18,8 @@
 #define TAILLE_INIT 300
 #define BUF_MAX 20
 
+extern Ez_window drawing_window, ui_window;
+
 //Définition des nouveau types
 typedef struct EPOINT EPOINT; 
 
@@ -44,7 +46,7 @@ typedef enum {
 /* **************************************************************** */
 /* ************************* Période 2 **************************** */
 /* **************************************************************** */
-#define MAX_ITER 100
+#define MAX_ITER 20
 #define L_CONVERGENCE 4
 
 struct Pixel {

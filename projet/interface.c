@@ -18,90 +18,110 @@ Ez_image * init_background(){
   Ez_image *image_background;
   image_background = ez_image_create(WIDTH_UI, HEIGHT_UI);
   image_background = ez_image_load("img/background_win.png");
-  if(image_background==NULL) printf("Background Nulllllll\n");
+  if(image_background==NULL) printf("Background Null\n");
   else printf("Image_background = %p \n", image_background);
   return image_background;
 }
 
 void init_images_buttons(Win_Data *win1_data){
 	
-  //FIRST BUTTONS
-  win1_data->image_button[0] = ez_image_create(120,35);
+  /* FIRST BUTTONS
+   * */
+   	  
+  //Koch button
+  win1_data->image_button[0] = ez_image_create(80,35);
   win1_data->image_button[0] = ez_image_load("img/0.png");
-  win1_data->image_active_button[0] = ez_image_create(120,35);
-  win1_data->image_active_button[0] = ez_image_load("img/14.png");
-  win1_data->image_button[1] = ez_image_create(120,35);
+  win1_data->image_active_button[0] = ez_image_create(80,35);
+  win1_data->image_active_button[0] = ez_image_load("img/15.png");
+  //Mandelbrot button
+  win1_data->image_button[1] = ez_image_create(80,35);
   win1_data->image_button[1] = ez_image_load("img/1.png");
-  win1_data->image_active_button[1] = ez_image_create(120,35);
-  win1_data->image_active_button[1] = ez_image_load("img/15.png");
-
-  //SECOND BUTTONS
+  win1_data->image_active_button[1] = ez_image_create(80,35);
+  win1_data->image_active_button[1] = ez_image_load("img/16.png");
+  //Mandelbrot button
   win1_data->image_button[2] = ez_image_create(80,35);
   win1_data->image_button[2] = ez_image_load("img/2.png");
   win1_data->image_active_button[2] = ez_image_create(80,35);
-  win1_data->image_active_button[2] = ez_image_load("img/16.png");
+  win1_data->image_active_button[2] = ez_image_load("img/17.png");
+  
+  /* SECOND BUTTONS
+   * */
+
+  // Circulaire
   win1_data->image_button[3] = ez_image_create(80,35);
   win1_data->image_button[3] = ez_image_load("img/3.png");
   win1_data->image_active_button[3] = ez_image_create(80,35);
-  win1_data->image_active_button[3] = ez_image_load("img/17.png");
+  win1_data->image_active_button[3] = ez_image_load("img/18.png");
+  // FINI
   win1_data->image_button[4] = ez_image_create(80,35);
   win1_data->image_button[4] = ez_image_load("img/4.png");
   win1_data->image_active_button[4] = ez_image_create(80,35);
-  win1_data->image_active_button[4] = ez_image_load("img/18.png");
-  win1_data->image_button[5] = ez_image_create(240,35);
+  win1_data->image_active_button[4] = ez_image_load("img/19.png");
+  // Superposition
+  win1_data->image_button[5] = ez_image_create(80,35);
   win1_data->image_button[5] = ez_image_load("img/5.png");
-  win1_data->image_active_button[5] = ez_image_create(240,35);
-  win1_data->image_active_button[5] = ez_image_load("img/19.png");
-	
-  //ZOOM BUTTONS
-
-  win1_data->image_button[6] = ez_image_create(40,33);
+  win1_data->image_active_button[5] = ez_image_create(80,35);
+  win1_data->image_active_button[5] = ez_image_load("img/20.png");
+  // Stoping animation
+  win1_data->image_button[6] = ez_image_create(240,35);
   win1_data->image_button[6] = ez_image_load("img/6.png");
-  win1_data->image_active_button[6] = ez_image_create(40,33);
-  win1_data->image_active_button[6] = ez_image_load("img/20.png");
+  win1_data->image_active_button[6] = ez_image_create(240,35);
+  win1_data->image_active_button[6] = ez_image_load("img/21.png");
+	
+  /* ZOOM BUTTONS
+   * */
+   
   win1_data->image_button[7] = ez_image_create(40,33);
   win1_data->image_button[7] = ez_image_load("img/7.png");
   win1_data->image_active_button[7] = ez_image_create(40,33);
-  win1_data->image_active_button[7] = ez_image_load("img/21.png");
+  win1_data->image_active_button[7] = ez_image_load("img/22.png");
   win1_data->image_button[8] = ez_image_create(40,33);
   win1_data->image_button[8] = ez_image_load("img/8.png");
   win1_data->image_active_button[8] = ez_image_create(40,33);
-  win1_data->image_active_button[8] = ez_image_load("img/22.png");
+  win1_data->image_active_button[8] = ez_image_load("img/23.png");
   win1_data->image_button[9] = ez_image_create(40,33);
   win1_data->image_button[9] = ez_image_load("img/9.png");
   win1_data->image_active_button[9] = ez_image_create(40,33);
-  win1_data->image_active_button[9] = ez_image_load("img/23.png");
-
-  // check box buttons images 
-  win1_data->image_button[10] = ez_image_create(24,24);
+  win1_data->image_active_button[9] = ez_image_load("img/24.png");
+  win1_data->image_button[10] = ez_image_create(40,33);
   win1_data->image_button[10] = ez_image_load("img/10.png");
-  win1_data->image_active_button[10] = ez_image_create(24,24);
-  win1_data->image_active_button[10] = ez_image_load("img/24.png");
+  win1_data->image_active_button[10] = ez_image_create(40,33);
+  win1_data->image_active_button[10] = ez_image_load("img/25.png");
+  
+  
+  // check box buttons images 
   win1_data->image_button[11] = ez_image_create(24,24);
   win1_data->image_button[11] = ez_image_load("img/11.png");
   win1_data->image_active_button[11] = ez_image_create(24,24);
-  win1_data->image_active_button[11] = ez_image_load("img/25.png");
+  win1_data->image_active_button[11] = ez_image_load("img/26.png");
+  win1_data->image_button[12] = ez_image_create(24,24);
+  win1_data->image_button[12] = ez_image_load("img/12.png");
+  win1_data->image_active_button[12] = ez_image_create(24,24);
+  win1_data->image_active_button[12] = ez_image_load("img/27.png");
 	
   // save & load buttons :
-  win1_data->image_button[12] = ez_image_create(120,35);
-  win1_data->image_button[12] = ez_image_load("img/12.png");
-  win1_data->image_active_button[12] = ez_image_create(120,35);
-  win1_data->image_active_button[12] = ez_image_load("img/26.png");
   win1_data->image_button[13] = ez_image_create(120,35);
   win1_data->image_button[13] = ez_image_load("img/13.png");
   win1_data->image_active_button[13] = ez_image_create(120,35);
-  win1_data->image_active_button[13] = ez_image_load("img/27.png");
+  win1_data->image_active_button[13] = ez_image_load("img/28.png");
+  win1_data->image_button[14] = ez_image_create(120,35);
+  win1_data->image_button[14] = ez_image_load("img/14.png");
+  win1_data->image_active_button[14] = ez_image_create(120,35);
+  win1_data->image_active_button[14] = ez_image_load("img/29.png");
 }
 
 void init_buttons(Win_Data *win1_data){
   int i;
-  win1_data->bptab = createTable(14);
+  win1_data->bptab = createTable(15);
   win1_data->count_buttons = 0;
-  win1_data->active_button = malloc(sizeof(int)*(14));
-  for(i=0; i<14; i++) win1_data->active_button[i] = 0;
+  win1_data->active_button = malloc(sizeof(int)*(15));
+  for(i=0; i<15; i++) win1_data->active_button[i] = 0;
   win1_data->active_button[0] = 1; // Koch par défaut
-  win1_data->active_button[10] = 1; // Pix par défaut
-  create_buttons(&win1_data->count_buttons,  win1_data->bptab, 2, 120, 35, 10, 25);
+  win1_data->active_button[11] = 1; // Pix par défaut
+  win1_data->active_button[7] = 1; // Zoom *4 par défaut
+  
+  
+  create_buttons(&win1_data->count_buttons,  win1_data->bptab, 3,  80, 35, 10, 25);
   create_buttons(&win1_data->count_buttons,  win1_data->bptab, 3,  80, 35, 10, 90);
   create_buttons(&win1_data->count_buttons,  win1_data->bptab, 1, 240, 35, 10, 125);
 	
@@ -111,10 +131,10 @@ void init_buttons(Win_Data *win1_data){
   create_buttons(&win1_data->count_buttons,  win1_data->bptab, 1, 40, 33, 260, 26+33+33);
   create_buttons(&win1_data->count_buttons,  win1_data->bptab, 1, 40, 33, 260, 127);
   // check box sauvegard
-  create_buttons(&win1_data->count_buttons,  win1_data->bptab, 1, 24, 24, 90, 348);
-  create_buttons(&win1_data->count_buttons,  win1_data->bptab, 1, 24, 24, 90, 373);
+  create_buttons(&win1_data->count_buttons,  win1_data->bptab, 1, 24, 24, 90, 453);
+  create_buttons(&win1_data->count_buttons,  win1_data->bptab, 1, 24, 24, 90, 483);
   // button save et load
-  create_buttons(&win1_data->count_buttons,  win1_data->bptab, 2, 120, 35, 40, 410);
+  create_buttons(&win1_data->count_buttons,  win1_data->bptab, 2, 120, 35, 40, 510);
 }
 
 /* Génére les cordonnées du ( point en haut à droite et celui d'en bas à  
@@ -179,9 +199,12 @@ void draw_text(Ez_window ui_win, Ez_window drawing_win) {
   Win_Data *win1_data = ez_get_data(drawing_win);
   ez_set_color(ez_blue);
   ez_draw_text (ui_win, EZ_TL, 10, 10, "Choix de fractales");
-  ez_draw_text (ui_win, EZ_TL, 10, 75, "Choix animations");
+  ez_draw_text (ui_win, EZ_TL, 260, 10, "Zoom");
+  ez_draw_text (ui_win, EZ_TL, 10, 75, "Choix animations - Only Koch");
   ez_draw_text (ui_win, EZ_TL, 10, 180, "Parametre du flocon de koch");
-  ez_draw_text (ui_win, EZ_TL, 10, 290, "Parametre de sauvegarde");
+  ez_draw_text (ui_win, EZ_TL, 10, 260, "Parametre de Mandelbrot");
+  ez_draw_text (ui_win, EZ_TL, 10, 320, "Parametre de Julia");
+  ez_draw_text (ui_win, EZ_TL, 10, 400, "Parametre de sauvegarde");
   ez_set_color(ez_black);
   ez_draw_text (ui_win, EZ_TL, 30, 200, "Nombre d'iteration (n)         :");
   ez_draw_line (ui_win, 230,212, 260,212);
@@ -194,13 +217,22 @@ void draw_text(Ez_window ui_win, Ez_window drawing_win) {
   ez_draw_line (ui_win, 230,252, 260,252);
   text_display(drawing_win, ui_win, 230, 240, win1_data->temp_buf, win1_data->buf);
   ez_draw_text (ui_win, EZ_TL, 265, 240, "secondes");
-  ez_draw_text (ui_win, EZ_TL, 30, 310, "Nom du fichier (save&load):");
+  // Parametres mandelbrot
+  ez_draw_text (ui_win, EZ_TL, 30, 280, "Reel(z0) = 0  & Imaginaire(z0) = 0");
+  ez_draw_text (ui_win, EZ_TL, 30, 300, "Couleur Mandelbrot :");
+  // Paramatres Julia
+  ez_draw_text (ui_win, EZ_TL, 30, 340, "Le comlexe initial C");
+  ez_draw_text (ui_win, EZ_TL, 40, 360, "reel(C)       :");
+  ez_draw_text (ui_win, EZ_TL, 40, 380, "imaginaire(C) :");
+
+  // Parametre de sauvegarde
+  ez_draw_text (ui_win, EZ_TL, 30, 420, "Nom du fichier (save&load):");
   ez_draw_line (ui_win, 200,322, 290,322);
-  text_display(drawing_win, ui_win, 200, 210, win1_data->temp_buf, win1_data->buf);
-  ez_draw_text (ui_win, EZ_TL, 295, 310, ".in");
-  ez_draw_text (ui_win, EZ_TL, 30, 330, "Type du (save&load)       :");
-  ez_draw_text (ui_win, EZ_TL, 50, 355, "PPX  :");
-  ez_draw_text (ui_win, EZ_TL, 50, 380, "PIXEL:");
+  //text_display(drawing_win, ui_win, 200, 210, win1_data->temp_buf, win1_data->buf);
+  ez_draw_text (ui_win, EZ_TL, 295, 420, ".in");
+  ez_draw_text (ui_win, EZ_TL, 30, 440, "Type du (save&load)       :");
+  ez_draw_text (ui_win, EZ_TL, 40, 465, "PPX  :");
+  ez_draw_text (ui_win, EZ_TL, 40, 490, "PIXEL:");
 }
 
 /*	Récupérer les cordonnes du clique souris
@@ -226,30 +258,43 @@ button get_button_id(int **bptab, int count_buttons, int mx, int my){
  * TODO: on ne devrait pas passer la window mais que Win_data      */
 void execute_button_press(Ez_window drawing_win, button id_button){
   Win_Data *win1_data = ez_get_data(drawing_win);
+  Complexe z0_c; 			// DEBUG  ( Pour Mandelbrot et julia )
 	
   switch(id_button) {
     // Choix fractales
   case B_KOCH:
-    win1_data->active_button[B_KOCH] = 1;
-    win1_data->active_button[B_MANDELBROT] = 0;
+    win1_data->active_button[B_KOCH] 		= 1;
+    win1_data->active_button[B_MANDELBROT]  = 0;
+    win1_data->active_button[B_JULIA] 		= 0;
     win1_data->list = koch(drawing_window, win1_data->n , win1_data->c);
     break;
   case B_MANDELBROT:
-    win1_data->active_button[B_KOCH] = 0;
-    win1_data->active_button[B_MANDELBROT] = 1;
+    win1_data->active_button[B_KOCH] 		= 0;
+    win1_data->active_button[B_MANDELBROT]  = 1;
+    win1_data->active_button[B_JULIA] 		= 0;
     
-    Complexe z0_c;  // DEBUG
-    z0_c.reel = 0; 		/*DEBUG  = 0 SI MANDELBROT et toutes les autres valeurs comprises entre  **/
-    z0_c.imaginaire = 0;	/*DEBUG  les bornes de notre plan complex si c'est JULIA                 **/
+    z0_c.reel = 0.0; 			/*DEBUG  = 0 SI MANDELBROT et toutes les autres valeurs comprises entre  **/
+    z0_c.imaginaire = 0.0;	/*DEBUG  les bornes de notre plan complex si c'est JULIA                 **/
     
     /* Apropos des valeurs xmin xmax ymin ymax qui permette la convertion en plan complexes
      * Il sont égals à (-1.25,1.25,-1.25,1.25) pour JULIA
      * et (-2.0,2.0,-1.25,1.25) pour Manlbrot 
      * */
-    win1_data->mandelbrot = generate_mandelbrot_julia(z0_c,WIDTH_MAIN,HEIGHT_MAIN,-2.0,2.0,-1.25,1.25,0);
+    win1_data->mandelbrot = generate_mandelbrot_julia(z0_c,WIDTH_MAIN,HEIGHT_MAIN,-2.0,2.0,-1.25,1.25,0,0);
     ez_send_expose(drawing_window);
     break;
-		
+  case B_JULIA:
+    win1_data->active_button[B_KOCH] 		= 0;
+    win1_data->active_button[B_MANDELBROT]  = 0;
+    win1_data->active_button[B_JULIA] 		= 1;
+    
+    z0_c.reel = -0.76; 			/*DEBUG  = 0 SI MANDELBROT et toutes les autres valeurs comprises entre  **/
+    z0_c.imaginaire = 0.12;	/*DEBUG  les bornes de notre plan complex si c'est JULIA                 **/
+
+    win1_data->julia = generate_mandelbrot_julia(z0_c,WIDTH_MAIN,HEIGHT_MAIN,-1.25,1.25,-1.25,1.25,1,1);
+    ez_send_expose(drawing_window);
+    break;
+    		
     // Choix animations
   case B_ANIME1:
     win1_data->active_button[B_ANIME1] = 1;

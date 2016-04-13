@@ -7,12 +7,12 @@
 
 // Largeur et hauteur du MENU
 #define WIDTH_UI 320
-#define HEIGHT_UI 450
+#define HEIGHT_UI 550
 
 // Type de bouttons
 typedef enum {
 	B_NONE = -1,
-	B_KOCH,B_MANDELBROT,
+	B_KOCH,B_MANDELBROT,B_JULIA,
 	B_ANIME1,B_ANIME2,B_ANIME3,B_STOPANIM,
 	B_ZOOM4,B_ZOOM6,B_ZOOM8,B_ZOOM10,
 	B_PIXMAP,B_PPM,B_SAVE,B_LOAD

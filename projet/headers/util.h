@@ -44,7 +44,7 @@ typedef enum {
 /* **************************************************************** */
 /* ************************* Période 2 **************************** */
 /* **************************************************************** */
-#define MAX_ITER 20
+#define MAX_ITER 100
 #define L_CONVERGENCE 4
 
 struct Pixel {
@@ -82,12 +82,13 @@ typedef struct {
   int factor;
   int x1_frame, x2_frame, y1_frame, y2_frame;
   Ez_image *image_background; // image du background
-  Ez_image *image_button[14]; // tableau d'images de tous les bouttons
-  Ez_image *image_active_button[14]; // Tableau d'images des bouttons actives
+  Ez_image *image_button[15]; // tableau d'images de tous les bouttons
+  Ez_image *image_active_button[15]; // Tableau d'images des bouttons actives
   int **bptab; // Tableau regroupant tous les cordonnées des points des bouttons
   int count_buttons; // Nombres de bouttons dans la fênetre
   bool *active_button; // Verifie si le boutton est active ou pas
   Image *mandelbrot; //Matrice de pixels correspondant à l'ensemble de Mandelbrot
+  Image *julia; //Matrice de pixels correspondant à l'ensemble de Julia
 } Win_Data;
 
 /*
@@ -205,5 +206,6 @@ Pixel* init_pixel(int R, int G, int B);
 Image* init_image(int width, int height);
 void set_pixel(Image * im, Pixel * p, int lig, int col);
 void free_image(Image *im);
+void print_mandelbrot_julia(Ez_window window, int thickness, Image *fractale, bool isJulia);
 
 #endif

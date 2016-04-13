@@ -164,7 +164,7 @@ double** convergence(Complexe z0_c, int width, int height, double xmin, double x
 	return plan_divergence;
 }
 
-Image* generate_mandelbrot_julia(Complexe z0_c, int width, int height, double xmin, double xmax, double ymin, double ymax, bool isJulia) {
+Image* generate_mandelbrot_julia(Complexe z0_c, int width, int height, double xmin, double xmax, double ymin, double ymax, bool isJulia, bool isColor) {
 	Image *img;
 	double **plan_divergence;
 	int i,j;
@@ -174,8 +174,17 @@ Image* generate_mandelbrot_julia(Complexe z0_c, int width, int height, double xm
 
 	for(i=0; i<img->height; i++) {
 		for(j=0; j<img->width; j++) {
-			Pixel* pix_temp = init_pixel(255,255,255);
-			ez_HSV_to_RGB((360/MAX_ITER)*plan_divergence[i][j], 1, 1, &pix_temp->r, &pix_temp->g, &pix_temp->b);
+			Pixel* pix_temp = init_pixel(0,0,0); // en noir 
+			if(isColor)
+				ez_HSV_to_RGB((360/MAX_ITER)*plan_divergence[i][j], 1, 1, &pix_temp->r, &pix_temp->g, &pix_temp->b);
+			else {
+				if(plan_divergence[i][j]>1) { // en blanc
+					pix_temp->r = 255; 
+					pix_temp->g = 255;
+					pix_temp->b = 255;
+				}
+			}
+			
 			set_pixel(img, pix_temp, i, j);
 		}
 	}

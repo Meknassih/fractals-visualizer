@@ -401,3 +401,21 @@ void free_image(Image *img) {
 	
 	free(img->plan);
 }
+
+void print_mandelbrot_julia(Ez_window window, int thickness, Image *fractale, bool isJulia) { // isJulia pas nécéssaire, à retirer
+	int i,j;
+	ez_set_thick(thickness);
+	Pixel ***plan = fractale->plan;
+	for (i=0; i<fractale->height; i++) {
+		for (j=0; j<fractale->width; j++) {
+			ez_set_color(ez_get_RGB(plan[i][j]->r, plan[i][j]->g, plan[i][j]->b));
+			ez_set_thick(1);
+			ez_draw_point(window, i, j);
+			//DEBUG
+			if(isJulia)
+			printf("Julia : drawing point (%d, %d) color %d\n", i, j, ez_get_RGB(plan[i][j]->r, plan[i][j]->g, plan[i][j]->b));
+			else
+			printf("Mandelbrot : drawing point (%d, %d) color %d\n", i, j, ez_get_RGB(plan[i][j]->r, plan[i][j]->g, plan[i][j]->b));
+		}
+	}
+}

@@ -238,10 +238,10 @@ void execute_button_press(Ez_window drawing_win, button id_button){
     win1_data->active_button[B_KOCH] = 0;
     win1_data->active_button[B_MANDELBROT] = 1;
     
-    Complexe z0;  // DEBUG
-    z0.reel = 0.2; // DEBUG
-    z0.imaginaire = 0.4; // DEBUG
-    win1_data->mandelbrot = generate_mandelbrot(z0,WIDTH_MAIN,HEIGHT_MAIN,-2.4, 2.4, -1.5, 1.5);
+    Complexe z0_c;  // DEBUG
+    z0_c.reel = -0.123; 		/*DEBUG  = 0 SI MANDELBROT et toutes les autres valeurs comprises entre  **/
+    z0_c.imaginaire = 0.745;	/*DEBUG  les bornes de notre plan complex si c'est JULIA                 **/
+    win1_data->mandelbrot = generate_mandelbrot_julia(z0_c,WIDTH_MAIN,HEIGHT_MAIN,-2.4, 2.4, -1.5, 1.5,1);
     ez_send_expose(drawing_window);
     break;
 		

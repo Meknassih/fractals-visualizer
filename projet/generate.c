@@ -120,7 +120,7 @@ PLISTE koch(Ez_window win, int n, double c) {
 /* ************************ Période 2 ***************************** */
 /* **************************************************************** */
 
-double** convergence(Complexe z0, int width, int height, double xmin, double xmax, double ymin, double ymax) {
+double** convergence(Complexe z0_c, int width, int height, double xmin, double xmax, double ymin, double ymax, bool isJulia) {
 	double **plan_divergence;
 	/* Cette fonction calcule la suite zn+1 = zn²+ C
 	 * le complexe  z_pow represente : zn²
@@ -142,7 +142,11 @@ double** convergence(Complexe z0, int width, int height, double xmin, double xma
 	for(i=0; i<height; i++) {
 		for(j=0; j<width; j++) {
 			z = create_complexe(xmin + j*reel_factor,ymax - i*imaginaire_factor); // Convertion du cordonnée pixel [i][j] en cordonnée complexe z
-			p_cpx = create_complexe(z0.reel+(xmin + j*reel_factor),z0.imaginaire+(ymax - i*imaginaire_factor)); // la constante C ( regarde ligne 165 )
+			if(isJulia) // Si on demande la génération de fractale de julia
+			p_cpx = create_complexe(z0_c.reel,z0_c.imaginaire); // la constante C ( regarde ligne 165 )
+			else // Si on demande celui de mandelbrot
+			p_cpx = create_complexe(z0_c.reel+(xmin + j*reel_factor),z0_c.imaginaire+(ymax - i*imaginaire_factor)); // la constante C ( regarde ligne 165 )
+			
 			k=0; 
 			for(n=0; n<MAX_ITER; n++) {
 				z_pow = mul_cplx(z,z); // Calcul Zn²
@@ -160,13 +164,13 @@ double** convergence(Complexe z0, int width, int height, double xmin, double xma
 	return plan_divergence;
 }
 
-Image* generate_mandelbrot(Complexe z0, int width, int height, double xmin, double xmax, double ymin, double ymax) {
+Image* generate_mandelbrot_julia(Complexe z0_c, int width, int height, double xmin, double xmax, double ymin, double ymax, bool isJulia) {
 	Image *img;
 	double **plan_divergence;
 	int i,j;
 	img = init_image(width,height);
 	
-	plan_divergence = convergence(z0, img->width, img->height, xmin, xmax, ymin, ymax);
+	plan_divergence = convergence(z0_c, img->width, img->height, xmin, xmax, ymin, ymax, isJulia);
 
 	for(i=0; i<img->height; i++) {
 		for(j=0; j<img->width; j++) {

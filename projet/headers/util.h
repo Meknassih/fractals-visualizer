@@ -84,13 +84,14 @@ typedef struct {
   int factor;
   int x1_frame, x2_frame, y1_frame, y2_frame;
   Ez_image *image_background; // image du background
-  Ez_image *image_button[15]; // tableau d'images de tous les bouttons
-  Ez_image *image_active_button[15]; // Tableau d'images des bouttons actives
+  Ez_image *image_button[16]; // tableau d'images de tous les bouttons
+  Ez_image *image_active_button[16]; // Tableau d'images des bouttons actives
   int **bptab; // Tableau regroupant tous les cordonnées des points des bouttons
   int count_buttons; // Nombres de bouttons dans la fênetre
   bool *active_button; // Verifie si le boutton est active ou pas
   Image *mandelbrot; //Matrice de pixels correspondant à l'ensemble de Mandelbrot
   Image *julia; //Matrice de pixels correspondant à l'ensemble de Julia
+  bool is_mandel_color; // Couleur mandelbrot
 } Win_Data;
 
 /*

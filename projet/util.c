@@ -118,6 +118,7 @@ Win_Data init_general_settings(void) {
 
   win_data.buf = malloc(sizeof(char)*BUF_MAX);
   win_data.temp_buf = malloc(sizeof(char)*BUF_MAX);
+  win_data.is_mandel_color = false; // mandelbrot en noir
 
   return win_data;
 }

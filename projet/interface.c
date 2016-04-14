@@ -108,14 +108,20 @@ void init_images_buttons(Win_Data *win1_data){
   win1_data->image_button[14] = ez_image_load("img/14.png");
   win1_data->image_active_button[14] = ez_image_create(120,35);
   win1_data->image_active_button[14] = ez_image_load("img/29.png");
+  
+  // check box color mandelbrot
+  win1_data->image_button[15] = ez_image_create(24,24);
+  win1_data->image_button[15] = ez_image_load("img/55.png");
+  win1_data->image_active_button[15] = ez_image_create(24,24);
+  win1_data->image_active_button[15] = ez_image_load("img/56.png");
 }
 
 void init_buttons(Win_Data *win1_data){
   int i;
-  win1_data->bptab = createTable(15);
+  win1_data->bptab = createTable(16);
   win1_data->count_buttons = 0;
-  win1_data->active_button = malloc(sizeof(int)*(15));
-  for(i=0; i<15; i++) win1_data->active_button[i] = 0;
+  win1_data->active_button = malloc(sizeof(int)*(16));
+  for(i=0; i<16; i++) win1_data->active_button[i] = 0;
   win1_data->active_button[0] = 1; // Koch par défaut
   win1_data->active_button[11] = 1; // Pix par défaut
   win1_data->active_button[7] = 1; // Zoom *4 par défaut
@@ -135,6 +141,8 @@ void init_buttons(Win_Data *win1_data){
   create_buttons(&win1_data->count_buttons,  win1_data->bptab, 1, 24, 24, 90, 483);
   // button save et load
   create_buttons(&win1_data->count_buttons,  win1_data->bptab, 2, 120, 35, 40, 510);
+  // check box color mandelbrot
+  create_buttons(&win1_data->count_buttons,  win1_data->bptab, 1, 24, 24, 158, 294);
 }
 
 /* Génére les cordonnées du ( point en haut à droite et celui d'en bas à  
@@ -280,7 +288,7 @@ void execute_button_press(Ez_window drawing_win, button id_button){
      * Il sont égals à (-1.25,1.25,-1.25,1.25) pour JULIA
      * et (-2.0,2.0,-1.25,1.25) pour Manlbrot 
      * */
-    win1_data->mandelbrot = generate_mandelbrot_julia(z0_c,WIDTH_MAIN,HEIGHT_MAIN,-2.0,2.0,-1.25,1.25,0,0);
+    win1_data->mandelbrot = generate_mandelbrot_julia(z0_c,WIDTH_MAIN,HEIGHT_MAIN,-2.0,2.0,-1.25,1.25,0,win1_data->is_mandel_color);
     ez_send_expose(drawing_window);
     break;
   case B_JULIA:
@@ -374,7 +382,17 @@ void execute_button_press(Ez_window drawing_win, button id_button){
   case B_LOAD:
     printf("loading...\n");
     load_pixmap(win1_data->save_file, &win1_data->width, &win1_data->height);
-    break;			
+    break;
+    // Check box, active les couleurs mandelbrot
+  case B_ISMAND_COLOR:
+    if (win1_data->active_button[B_ISMAND_COLOR]) {
+		win1_data->active_button[B_ISMAND_COLOR] = 0;
+		win1_data->is_mandel_color = false;
+	} else {
+		win1_data->active_button[B_ISMAND_COLOR] = 1;
+		win1_data->is_mandel_color = true;
+	}
+    break;
   default:
 		
     break;

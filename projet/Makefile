@@ -1,4 +1,11 @@
-ifeq ($(SYSTYPE),UNIX)
+ifeq ($(SYSTYPE),WIN32)
+    # Windows, all versions
+    CC     = gcc
+    CFLAGS = -Wall -c
+    GFLAGS = -lgdi32 -lmsimg32
+    CL = del projet.exe 
+
+else
     # Unix/X11 systems (linux, Mac OS X, Cygwin, etc)
     #Compiler
 	CC     = gcc
@@ -10,13 +17,6 @@ ifeq ($(SYSTYPE),UNIX)
 	MFLAGS = -lm
 	#Cleaning command
 	CL = rm projet 
-
-else ifeq ($(SYSTYPE),WIN32)
-    # Windows, all versions
-    CC     = gcc
-    CFLAGS = -Wall -c
-    GFLAGS = -lgdi32 -lmsimg32
-    CL = del projet.exe 
 
 endif
 

@@ -1,3 +1,7 @@
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
 #include "headers/ez-draw.h"
 #include "headers/util.h"
 #include "headers/interface.h"
@@ -40,61 +44,6 @@ EPOINT * remove_after(EPOINT * elt) {
   elt->next = NULL;
   
   return elt;
-}
-
-void save_pixmap(char * nf, PLISTE lp, int width, int height) {
-  FILE *pnf;
-  EPOINT *current_point;
-  
-  pnf=fopen(nf, "w");
-  if (pnf==NULL) {
-    printf("Impossible d'ouvrir le fichier\n");
-    return;
-  }
-  
-  fprintf(pnf, "%d %d\n", width, height);
-  printf("SAVED Width %d / Height %d\n", width, height);
-  current_point=lp;
-  while(current_point != NULL) {
-    fprintf(pnf, "%.0lf %.0lf\n", current_point->x, current_point->y);
-    current_point = current_point->next;
-  }
-  fclose(pnf);
-  printf("Liste ecrite dans %s\n", nf);
-}
-
-PLISTE load_pixmap(char * nf, int *width, int *height){
-  double x,y;
-  PLISTE new_list;
-  EPOINT *end_point;
-  FILE* pnf = NULL;
-  char *nfext;
-  
-  nfext = malloc(strlen(nf) + strlen(".pix") + 1);
-  strcpy(nfext, nf);
-  strcat(nfext, ".pix");
-  pnf = fopen(nfext, "r");
-  if (pnf != NULL)
-  {
-	fscanf(pnf, "%d %d\n", width, height);
-	printf("LOADED Width %d / Height %d\n", *width, *height);
-    fscanf(pnf, "%lf %lf\n", &x, &y);
-    new_list = init_liste(x,y);
-    end_point = new_list;
-    while(fscanf(pnf, "%lf %lf\n", &x, &y) != -1){
-		//printf("x = %lf y = %lf\n", x, y);
-		end_point->next = insert_after(end_point, x,y);
-		end_point = end_point->next;
-    }
-  }
-  else
-  {
-    // On affiche un message d'erreur si on veut
-    printf("Impossible d'ouvrir le fichier\n");
-  }
-  fclose(pnf);
-  
-  return new_list;
 }
 
 void afficher_liste(PLISTE l){
@@ -152,6 +101,7 @@ Win_Data init_general_settings(void) {
   Win_Data win_data;
   int i;
   
+  srand(time(NULL));
   win_data.width = WIDTH_MAIN;
   win_data.height = HEIGHT_MAIN;
   win_data.mode = PIXMAP;
@@ -186,6 +136,8 @@ PLISTE redimensionner_flocon(PLISTE lp, int width, int height, int *old_width, i
 	
   return lp;
 }
+
+/********** Fonctions de sauvegarde/chargement **********/
 
 void save(PLISTE lp, char *nf, svmode mode, int width, int height) {
   char *nfext;
@@ -222,6 +174,116 @@ void load(PLISTE lp, char *nf, svmode mode, int *width, int *height) {
 	
   free(nfext);
 }
+
+void save_pixmap(char * nf, PLISTE lp, int width, int height) {
+  FILE *pnf;
+  EPOINT *current_point;
+  
+  pnf=fopen(nf, "w");
+  if (pnf==NULL) {
+    printf("Impossible d'ouvrir le fichier\n");
+    return;
+  }
+  
+  fprintf(pnf, "%d %d\n", width, height);
+  printf("SAVED Width %d / Height %d\n", width, height);
+  current_point=lp;
+  while(current_point != NULL) {
+    fprintf(pnf, "%.0lf %.0lf\n", current_point->x, current_point->y);
+    current_point = current_point->next;
+  }
+  fclose(pnf);
+  printf("Liste ecrite dans %s\n", nf);
+}
+
+PLISTE load_pixmap(char * nf, int *width, int *height){
+  double x,y;
+  PLISTE new_list;
+  EPOINT *end_point;
+  FILE *pnf = NULL;
+  char *nfext;
+  
+  nfext = malloc(strlen(nf) + strlen(".pix") + 1);
+  strcpy(nfext, nf);
+  strcat(nfext, ".pix");
+  pnf = fopen(nfext, "r");
+  if (pnf != NULL)
+  {
+  fscanf(pnf, "%d %d\n", width, height);
+  printf("LOADED Width %d / Height %d\n", *width, *height);
+    fscanf(pnf, "%lf %lf\n", &x, &y);
+    new_list = init_liste(x,y);
+    end_point = new_list;
+    while(fscanf(pnf, "%lf %lf\n", &x, &y) != -1){
+    //printf("x = %lf y = %lf\n", x, y);
+    end_point->next = insert_after(end_point, x,y);
+    end_point = end_point->next;
+    }
+  }
+  else
+  {
+    // On affiche un message d'erreur si on veut
+    printf("Impossible d'ouvrir le fichier\n");
+  }
+  fclose(pnf);
+  free(nfext);
+  
+  return new_list;
+}
+
+void save_img(Image *img, char *nf) {
+  FILE *pnf = NULL;
+  char *nfext;
+  Pixel ***plan = img->plan;
+  int progression_x, n=0, i, j;
+
+  nfext = malloc(strlen(nf) + strlen(".ppm") + 1);
+  strcpy(nfext, nf);
+  strcat(nfext, ".ppm");
+  
+  while(access(nfext, F_OK) != -1) { //Si le fichier existe, ajoute un nombre aléatoire
+    /*Génère un nombre dans [0-99]
+    int random = rand()%100;*/
+    n++;
+    //Conversion en string
+    char str_random[3];
+    sprintf(str_random, "%d", n);
+
+    free(nfext);
+    nfext = malloc(strlen(nf) + strlen(str_random) + strlen(".ppm") + 1);
+    strcpy(nfext, nf);
+    strcat(nfext, str_random);
+    strcat(nfext, ".ppm");
+  }
+  pnf = fopen(nfext, "w");
+
+  //Ecriture du fichier .ppm
+  fprintf(pnf, "P3\n");
+  fprintf(pnf, "# %s\n", nfext);
+  fprintf(pnf, "%d %d\n", img->width, img->height);
+  fprintf(pnf, "255\n");
+  for (i=0; i<img->height; i++) {
+    for (j=0; j<img->width; j++) {
+      fprintf(pnf, "%i %i %i\t", plan[i][j]->r, plan[i][j]->g, plan[i][j]->b);
+      if (j%4 == 3) fprintf(pnf, "\n"); //4 pixels par ligne
+    }
+    //Barre de progression avec son contour
+    progression_x = (int)((double)((double)WIDTH_UI/(double)img->height)*i);
+    ez_set_color(ez_green);
+    ez_set_thick(1);
+    ez_fill_rectangle(ui_window, 0, 0, progression_x, 5);
+    ez_set_color(ez_black);
+    ez_draw_line(ui_window, 0, 6, progression_x, 6);
+    ez_draw_line(ui_window, progression_x+1, 0, progression_x+1, 6);
+    ez_send_expose(ui_window);
+    //printf("%d%%\n", (int)((double)((double)WIDTH_UI/(double)img->height)*i)); //DEBUG progression
+  }
+
+  fclose(pnf);
+  free(nfext);
+}
+
+/********** Fonctions de zoom **********/
 
 bool zoom(Win_Data *win_data, int mouse_x, int mouse_y) {
   init_zoom(win_data);

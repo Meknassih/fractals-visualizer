@@ -360,7 +360,13 @@ void execute_button_press(Ez_window drawing_win, button id_button){
     // Boutton sauvegarde
   case B_SAVE:
     win1_data->active_button[B_SAVE]  = 1;
-    save_pixmap(win1_data->save_file, win1_data->list, win1_data->width, win1_data->height);
+    //save_pixmap(win1_data->save_file, win1_data->list, win1_data->width, win1_data->height);
+    if (win1_data->active_button[B_PPM]) {
+      if (win1_data->active_button[B_MANDELBROT])
+        save_img(win1_data->mandelbrot, "savetest");
+      else if (win1_data->active_button[B_JULIA])
+        save_img(win1_data->julia, "savetest");
+    }
     win1_data->active_button[B_SAVE]  = 0;
     break;
 		

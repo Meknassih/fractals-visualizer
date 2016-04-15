@@ -284,6 +284,35 @@ void save_img(Image *img, char *nf) {
   free(nfext);
 }
 
+Image* load_img(char *nf) {
+  FILE *pnf = NULL;
+  char *nfext, magicn[3], readnf[100];
+  Image *img;
+  int maxcolorval;
+
+  nfext = malloc(strlen(nf) + strlen(".ppm") + 1);
+  strcpy(nfext, nf);
+  strcat(nfext, ".ppm");
+
+  pnf = fopen(nfext, "r");
+  if (pnf == NULL) {
+    printf("%s not found !\n", nfext);
+    return NULL;
+  }
+
+  img = malloc(sizeof(Image));
+  //Lecture du header
+  fscanf(pnf, "%s\n# %s\n%d %d\n%d", magicn, readnf, &img->width, &img->height, &maxcolorval);
+  printf("HEADER:\n%s\n# %s\n%d %d\n%d", magicn, readnf, img->width, img->height, maxcolorval); //DEBUG
+
+  //TODO: Lecture dans une double boucle du fichier PPM
+
+  fclose(pnf);
+  free(nfext);
+  return NULL;
+}
+
+
 /********** Fonctions de zoom **********/
 
 bool zoom(Win_Data *win_data, int mouse_x, int mouse_y) {

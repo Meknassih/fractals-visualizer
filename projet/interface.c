@@ -380,8 +380,13 @@ void execute_button_press(Ez_window drawing_win, button id_button){
 		
     // Boutton Chargement
   case B_LOAD:
-    printf("loading...\n");
-    load_pixmap(win1_data->save_file, &win1_data->width, &win1_data->height);
+    //load_pixmap(win1_data->save_file, &win1_data->width, &win1_data->height);
+    win1_data->active_button[B_LOAD]  = true;
+    if (win1_data->active_button[B_PPM]) {
+      win1_data->mandelbrot = load_img("savetest"); //Marche aussi pour Julia
+    }
+    win1_data->active_button[B_LOAD]  = false;
+    ez_send_expose(drawing_window);
     break;
     // Check box, active les couleurs mandelbrot
   case B_ISMAND_COLOR:

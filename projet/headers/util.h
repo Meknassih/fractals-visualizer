@@ -211,5 +211,6 @@ void set_pixel(Image * im, Pixel * p, int lig, int col);
 void free_image(Image *im);
 void print_mandelbrot_julia(Ez_window window, int thickness, Image *fractale, bool isJulia);
 void save_img(Image *img, char *nf);
+Image* load_img(char *nf);
 
 #endif

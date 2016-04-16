@@ -3,7 +3,7 @@
 
 #include "cplx.h"
 
-extern Ez_window drawing_window, ui_window;
+extern Ez_window drawing_window, ui_window, popup_window;
 
 //COMMENT
 PLISTE init_triangle(Ez_window win, double c);

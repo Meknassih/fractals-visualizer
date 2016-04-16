@@ -8,7 +8,7 @@
 #include "headers/events.h"
 
 //Variables globales uniquement pour les fenêtres
-Ez_window drawing_window, ui_window;
+Ez_window drawing_window, ui_window, popup_window;
 
 int main(int argc, char *argv[]) {
   Win_Data win1_data;
@@ -18,6 +18,8 @@ int main(int argc, char *argv[]) {
 
   drawing_window = ez_window_create(WIDTH_MAIN, HEIGHT_MAIN, "Affichage fractale", win1_event);
   ui_window = ez_window_create(WIDTH_UI, HEIGHT_UI, "Paramètres", win2_event);
+  popup_window = ez_window_create(WIDTH_POPUP, HEIGHT_POPUP, "", win3_event);
+  ez_window_show(popup_window, false);
 
   // Initialisation
   win1_data = init_general_settings();
@@ -28,6 +30,7 @@ int main(int argc, char *argv[]) {
   
   ez_window_dbuf(drawing_window, 1);
   ez_window_dbuf(ui_window, 1);
+  ez_auto_quit(false);
 
   ez_set_data(drawing_window, &win1_data);
 

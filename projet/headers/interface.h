@@ -16,7 +16,8 @@ typedef enum {
 	B_ANIME1,B_ANIME2,B_ANIME3,B_STOPANIM,
 	B_ZOOM4,B_ZOOM6,B_ZOOM8,B_ZOOM10,
 	B_PIXMAP,B_PPM,B_SAVE,B_LOAD,
-	B_ISMAND_COLOR
+	B_ISMAND_COLOR,
+	B_N, B_C, B_DELAY, B_Z0C_REEL, B_Z0C_IMAGINAIRE	
 } button;
 
 
@@ -30,6 +31,6 @@ Ez_image * init_background();
 void init_images_buttons(Win_Data *win1_data);
 void init_buttons(Win_Data *win1_data);
 int text_input(Ez_event *ev, char *s);
-void text_display(Ez_window drawing_win, Ez_window ui_win, int x, int y, char *s1, char *s2);
+void text_display(Ez_window win, int x, int y, char *s1, char *s2);
 
 #endif

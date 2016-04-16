@@ -140,12 +140,16 @@ double** convergence(Complexe z0_c, int width, int height, double xmin, double x
 	}
 	
 	for(i=0; i<height; i++) {
-		for(j=0; j<width; j++) {
+		for(j=0; j<width; j++) { // vv A revoir vv
+			
 			z = create_complexe(xmin + j*reel_factor,ymax - i*imaginaire_factor); // Convertion du cordonnée pixel [i][j] en cordonnée complexe z
+
 			// Si on demande la génération de fractale de julia
-			if(isJulia) p_cpx = create_complexe(z0_c.reel,z0_c.imaginaire); // la constante C ( regarde ligne 165 )
+			if(isJulia) 
+				p_cpx = create_complexe(z0_c.reel,z0_c.imaginaire); // la constante C ( regarde ligne 165 )
 			// Si on demande celui de mandelbrot
-			else p_cpx = create_complexe(z0_c.reel+(xmin + j*reel_factor),z0_c.imaginaire+(ymax - i*imaginaire_factor)); // la constante C ( regarde ligne 165 )
+			else 
+				p_cpx = create_complexe(z0_c.reel+(xmin + j*reel_factor),z0_c.imaginaire+(ymax - i*imaginaire_factor)); // la constante C ( regarde ligne 165 )
 			
 			k=0; 
 			for(n=0; n<MAX_ITER; n++) {
@@ -155,10 +159,12 @@ double** convergence(Complexe z0_c, int width, int height, double xmin, double x
 					z = add_cplx(z_pow,p_cpx); // Zn+1 = Zn² +c  => avec Zn² = z_pow et C = p_cpx
 				} else {
 					plan_divergence[i][j] = k;
+					printf("%d ", k); //DEBUG
 					break;
 				}
 			}
 		}
+		printf("\n"); //DEBUG
 	}
 	
 	return plan_divergence;
@@ -176,7 +182,10 @@ Image* generate_mandelbrot_julia(Complexe z0_c, int width, int height, double xm
 		for(j=0; j<img->width; j++) {
 			Pixel* pix_temp = init_pixel(0,0,0); // en noir 
 			if(isColor)
-				ez_HSV_to_RGB((360/MAX_ITER)*plan_divergence[i][j], 1, 1, &pix_temp->r, &pix_temp->g, &pix_temp->b);
+				if(plan_divergence[i][j] >= MAX_ITER)
+					ez_HSV_to_RGB(0,0,0, &pix_temp->r, &pix_temp->g, &pix_temp->b);
+				else
+					ez_HSV_to_RGB((sin(plan_divergence[i][j]/100)*300)+40, 1, 1, &pix_temp->r, &pix_temp->g, &pix_temp->b);
 			else {
 				if(plan_divergence[i][j]>1) { // en blanc
 					pix_temp->r = 255; 

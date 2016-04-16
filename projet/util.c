@@ -107,6 +107,7 @@ Win_Data init_general_settings(void) {
   win_data.mode = PIXMAP;
   win_data.n = ORDRE_INIT;
   win_data.c = TAILLE_INIT;
+  win_data.delay_anim = 400;
   win_data.save_file = "sauvegarde";
   win_data.configure_count = 0;
   win_data.zooming = false;
@@ -118,6 +119,8 @@ Win_Data init_general_settings(void) {
 
   win_data.buf = malloc(sizeof(char)*BUF_MAX);
   win_data.temp_buf = malloc(sizeof(char)*BUF_MAX);
+  win_data.z0_c = *(create_complexe(-0.76,0.12));
+  win_data.z0 = *(create_complexe(0.0,0.0));
   win_data.is_mandel_color = false; // mandelbrot en noir
 
   return win_data;

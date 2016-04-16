@@ -9,8 +9,8 @@
 
 //Paramètres initiaux
 #define FIRST_X 200
-#define WIDTH_MAIN 400
-#define HEIGHT_MAIN 400
+#define WIDTH_MAIN 800
+#define HEIGHT_MAIN 600
 #define MAX_ZOOM_PARTS 100
 #define FRAME_MARGIN 15
 #define FACTOR_INIT 4
@@ -18,7 +18,7 @@
 #define TAILLE_INIT 300
 #define BUF_MAX 20
 
-extern Ez_window drawing_window, ui_window;
+extern Ez_window drawing_window, ui_window, popup_window;
 
 //Définition des nouveau types
 typedef struct EPOINT EPOINT; 
@@ -46,7 +46,9 @@ typedef enum {
 /* **************************************************************** */
 /* ************************* Période 2 **************************** */
 /* **************************************************************** */
-#define MAX_ITER 20
+#define WIDTH_POPUP 320
+#define HEIGHT_POPUP 60
+#define MAX_ITER 100
 #define L_CONVERGENCE 4
 
 struct Pixel {
@@ -74,7 +76,8 @@ typedef struct {
   PLISTE list, zoom_list[MAX_ZOOM_PARTS]; //Liste de points pour la fractale + portion zoomée
   int n; //Ordre de la fractale
   int configure_count; //Nombre de ConfigureNotify déclenchés
-  double c; //Largeur du premier ordre
+  double c; //Largeur du premier segment (koch)
+  int delay_anim; //ms entre chaque flocon
   int width, height; //Dimensions de la fenêtre à tout moment
   svmode mode; //Mode de sauvegarde (PIX, PPM)
   char *save_file; //Nom du fichier de sauvegarde sans ext
@@ -84,13 +87,15 @@ typedef struct {
   int factor;
   int x1_frame, x2_frame, y1_frame, y2_frame;
   Ez_image *image_background; // image du background
-  Ez_image *image_button[16]; // tableau d'images de tous les bouttons
-  Ez_image *image_active_button[16]; // Tableau d'images des bouttons actives
+  Ez_image *image_button[21]; // tableau d'images de tous les bouttons
+  Ez_image *image_active_button[21]; // Tableau d'images des bouttons actives
   int **bptab; // Tableau regroupant tous les cordonnées des points des bouttons
   int count_buttons; // Nombres de bouttons dans la fênetre
   bool *active_button; // Verifie si le boutton est active ou pas
   Image *mandelbrot; //Matrice de pixels correspondant à l'ensemble de Mandelbrot
   Image *julia; //Matrice de pixels correspondant à l'ensemble de Julia
+  Complexe z0_c; // Valeur c pour les différents Julia
+  Complexe z0; // Z0 = 0+0i pour Mandelbrot
   bool is_mandel_color; // Couleur mandelbrot
 } Win_Data;
 

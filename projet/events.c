@@ -108,6 +108,10 @@ void win1_on_motion(Ez_event *ev) {
   ez_send_expose(ev->win);
 }
 
+void win1_on_close(Ez_event *ev) {
+	ez_quit();
+}
+
 void win1_event(Ez_event *ev) {
   switch(ev->type) {
   case Expose: 
@@ -125,6 +129,9 @@ void win1_event(Ez_event *ev) {
   case MotionNotify:
     win1_on_motion(ev);
     break;
+  case WindowClose:
+	win1_on_close(ev);
+	break;
   }
 }
 
@@ -164,6 +171,10 @@ void win2_on_button_press(Ez_event *ev) {
   ez_set_data(drawing_window, win1_data); // renvoie les données à la fenêtre
 }
 
+void win2_on_close(Ez_event *ev) {
+	ez_quit(); //TODO: juste cacher la fenêtre puis la rouvrir lors de la regénération
+}
+
 void win2_event(Ez_event *ev) {
   switch(ev->type) {
   case Expose: 
@@ -178,10 +189,56 @@ void win2_event(Ez_event *ev) {
   case ButtonPress:
     win2_on_button_press(ev);
     break;
-    /*case MotionNotify:
-    win2_on_motion(ev);
-    break;*/
+  case WindowClose:
+	win2_on_close(ev);
+	break;
   }
+}
+
+/****************************************************
+ *Gestion d'évènement pour la fenêtre pop-up        *
+ ****************************************************/
+void win3_on_expose(Ez_event *ev) {
+	Win_Data *win1_data = ez_get_data(drawing_window);
+	
+	ez_set_nfont(1);
+	ez_set_color(ez_black);
+	ez_draw_text(ev->win, EZ_MC, WIDTH_POPUP/2, (HEIGHT_POPUP/2)-20, "Entrez la valeur :");
+	text_display(popup_window, WIDTH_POPUP/2-50, (HEIGHT_POPUP/2)-5, win1_data->temp_buf, win1_data->buf);
+	
+	ez_set_nfont(0);
+	ez_set_color(ez_grey);
+	ez_draw_text(ev->win, EZ_MC, WIDTH_POPUP/2, (HEIGHT_POPUP/2)+20, "ENTREE pour valider");
+	ez_set_data(drawing_window, win1_data);
+}
+
+void win3_on_keypress(Ez_event *ev) {
+  Win_Data *win1_data = ez_get_data(drawing_window);
+  
+  int k = text_input(ev, win1_data->temp_buf);
+  if (k == 2) {
+    strncpy(win1_data->buf, win1_data->temp_buf, BUF_MAX);
+    ez_set_data(drawing_window, win1_data);
+  }
+  if (k > 0) ez_send_expose (ev->win);
+}
+
+void win3_on_close(Ez_event *ev) {
+	ez_window_show(ev->win, false);
+}
+
+void win3_event(Ez_event *ev) {
+	switch(ev->type) {
+	case Expose:
+	  win3_on_expose(ev);
+	  break;
+	case KeyPress:
+      win3_on_keypress(ev);
+      break;
+    case WindowClose:
+		win3_on_close(ev);
+		break;
+	}
 }
 
 

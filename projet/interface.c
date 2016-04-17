@@ -1,8 +1,11 @@
+#include <stdlib.h>
 #include "headers/ez-draw.h"
 #include "headers/ez-image.h"
 #include "headers/util.h"
 #include "headers/generate.h"
 #include "headers/interface.h"
+#include "headers/events.h"
+
 
 
 // Alloue de la mémoire pour un tableau 'l' ligne, 4 colonnes
@@ -321,7 +324,6 @@ button get_button_id(int **bptab, int count_buttons, int mx, int my){
  * TODO: on ne devrait pas passer la window mais que Win_data      */
 void execute_button_press(Ez_window drawing_win, button id_button){
   Win_Data *win1_data = ez_get_data(drawing_win);
-	
   switch(id_button) {
     // Choix fractales
   case B_KOCH:
@@ -414,18 +416,44 @@ void execute_button_press(Ez_window drawing_win, button id_button){
     break;
   // Cases de saisie
   case B_N:
-    ez_window_show(popup_window, true);
+	win1_data->active_button[B_N] = 1;
+	win1_data->active_button[B_C] = 0;
+	win1_data->active_button[B_DELAY] = 0;
+	win1_data->active_button[B_Z0C_REEL] = 0;
+	win1_data->active_button[B_Z0C_IMAGINAIRE] = 0;
+	ez_window_show(popup_window, true);
+
     break;
   case B_C:
+	win1_data->active_button[B_N] = 0;
+	win1_data->active_button[B_C] = 1;
+	win1_data->active_button[B_DELAY] = 0;
+	win1_data->active_button[B_Z0C_REEL] = 0;
+	win1_data->active_button[B_Z0C_IMAGINAIRE] = 0;
 	ez_window_show(popup_window, true);
     break;
   case B_DELAY:
+	win1_data->active_button[B_N] = 0;
+	win1_data->active_button[B_C] = 0;
+	win1_data->active_button[B_DELAY] = 1;
+	win1_data->active_button[B_Z0C_REEL] = 0;
+	win1_data->active_button[B_Z0C_IMAGINAIRE] = 0;
 	ez_window_show(popup_window, true);
     break;
   case B_Z0C_REEL:
+	win1_data->active_button[B_N] = 0;
+	win1_data->active_button[B_C] = 0;
+	win1_data->active_button[B_DELAY] = 0;
+	win1_data->active_button[B_Z0C_REEL] = 1;
+	win1_data->active_button[B_Z0C_IMAGINAIRE] = 0;
 	ez_window_show(popup_window, true);
     break;
    case B_Z0C_IMAGINAIRE:
+	win1_data->active_button[B_N] = 0;
+	win1_data->active_button[B_C] = 0;
+	win1_data->active_button[B_DELAY] = 0;
+	win1_data->active_button[B_Z0C_REEL] = 0;
+	win1_data->active_button[B_Z0C_IMAGINAIRE] = 1;
 	ez_window_show(popup_window, true);
     break;
     // Choix du type de sauvegarde et chargement
@@ -502,6 +530,6 @@ void text_display(Ez_window win, int x, int y, char *s1, char *s2) {
 
   if (strcmp (win1_data->buf, "") != 0) {
     ez_set_color (ez_blue);
-    //ez_draw_text (ui_win, EZ_TC, 200, 70, "You have validated this text:\n%s", s2);
+    ez_draw_text (ui_window, EZ_TL, 20, 530	, "You have validated: %s", win1_data->buf);
   }
 }

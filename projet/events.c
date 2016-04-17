@@ -3,6 +3,8 @@
 #include "headers/interface.h"
 #include "headers/generate.h"
 #include "headers/events.h"
+#include "headers/cplx.h"
+
 
 /****************************************************
  *Gestion d'évènements pour la fenêtre de dessin    *
@@ -205,22 +207,54 @@ void win3_on_expose(Ez_event *ev) {
 	ez_set_color(ez_black);
 	ez_draw_text(ev->win, EZ_MC, WIDTH_POPUP/2, (HEIGHT_POPUP/2)-20, "Entrez la valeur :");
 	text_display(popup_window, WIDTH_POPUP/2-50, (HEIGHT_POPUP/2)-5, win1_data->temp_buf, win1_data->buf);
-	
 	ez_set_nfont(0);
 	ez_set_color(ez_grey);
 	ez_draw_text(ev->win, EZ_MC, WIDTH_POPUP/2, (HEIGHT_POPUP/2)+20, "ENTREE pour valider");
+	
+
+	//ez_send_expose(drawing_window);
 	ez_set_data(drawing_window, win1_data);
-}
+	}
 
 void win3_on_keypress(Ez_event *ev) {
   Win_Data *win1_data = ez_get_data(drawing_window);
+  int tmp_n=0;
+  double tmp_c = 0.0;
   
   int k = text_input(ev, win1_data->temp_buf);
+  
   if (k == 2) {
     strncpy(win1_data->buf, win1_data->temp_buf, BUF_MAX);
     ez_set_data(drawing_window, win1_data);
+    
+    if(win1_data->active_button[B_N]) {  // Si modification de n !
+		tmp_n = win1_data->n; 
+		win1_data->n = atoi(win1_data->buf); // convertir en entier
+		ez_send_expose(ui_window); // Afficher la nouvelle valeur sur l'interface graphique
+		if(win1_data->n != tmp_n) { // Ne regénére un nouveau koch que si la nouvelle valeur de n est différente de l'ancienne !
+			win1_data->list = koch(drawing_window, win1_data->n , win1_data->c);
+		}
+	}
+	
+    if(win1_data->active_button[B_C]) {
+		tmp_c = win1_data->c;
+		win1_data->c = atoi(win1_data->buf); // convertir en entier
+		ez_send_expose(ui_window); // Afficher la nouvelle valeur sur l'interface graphique
+		if(win1_data->c != tmp_c) { // Ne regénére un nouveau koch que si la nouvelle valeur de n est différente de l'ancienne !
+			win1_data->list = koch(drawing_window, win1_data->n , win1_data->c);
+		}
+	}
+	
+    if(win1_data->active_button[B_DELAY]) {
+		win1_data->delay_anim = atoi(win1_data->buf); // convertir en entier
+		ez_send_expose(ui_window); // Afficher la nouvelle valeur sur l'interface graphique
+	}
+	
+	ez_send_expose(drawing_window);
+	ez_window_show(popup_window, false);
   }
-  if (k > 0) ez_send_expose (ev->win);
+  
+  if (k > 0) ez_send_expose(ev->win);
 }
 
 void win3_on_close(Ez_event *ev) {

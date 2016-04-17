@@ -5,6 +5,7 @@
 #include "ez-image.h"
 #include "util.h"
 
+
 // Largeur et hauteur du MENU
 #define WIDTH_UI 320
 #define HEIGHT_UI 550

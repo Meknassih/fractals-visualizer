@@ -146,7 +146,7 @@ double** convergence(Complexe z0_c, int width, int height, double xmin, double x
 
 			// Si on demande la génération de fractale de julia
 			if(isJulia) 
-				p_cpx = create_complexe(z0_c.reel,z0_c.imaginaire); // la constante C ( regarde ligne 165 )
+				p_cpx = create_complexe(z0_c.reel,z0_c.imaginaire); // La constante C
 			// Si on demande celui de mandelbrot
 			else 
 				p_cpx = create_complexe(z0_c.reel+(xmin + j*reel_factor),z0_c.imaginaire+(ymax - i*imaginaire_factor)); // la constante C ( regarde ligne 165 )

@@ -16,7 +16,7 @@
 #define FACTOR_INIT 4
 #define ORDRE_INIT 2
 #define TAILLE_INIT 300
-#define BUF_MAX 20
+#define BUF_MAX 6
 
 extern Ez_window drawing_window, ui_window, popup_window;
 

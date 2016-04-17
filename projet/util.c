@@ -522,6 +522,6 @@ void print_mandelbrot_julia(Ez_window window, int thickness, Image *fractale, bo
     ez_draw_line(ui_window, 0, 6, progression_x, 6);
     ez_draw_line(ui_window, progression_x+1, 0, progression_x+1, 6);
     ez_send_expose(ui_window);
-    //printf("%d%%\n", (int)((double)((double)WIDTH_UI/(double)fractale->height)*i)); //DEBUG progression
+    printf("%d%%\n", (int)((double)((double)WIDTH_UI/(double)fractale->height)*i)); //DEBUG progression
 	}
 }

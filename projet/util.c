@@ -21,18 +21,18 @@ PLISTE init_liste(double xx, double yy) {
 EPOINT * insert_after(EPOINT * elt, double xx, double yy) {
   EPOINT *new_point;
   EPOINT *new_next; //DEBUG
-
+ 
   new_point=(EPOINT*)malloc(sizeof(EPOINT));
   new_point->x = xx;
   new_point->y = yy;
   if (elt->next == NULL) { //Si 'elt' était le dernier de la liste
     new_point->next = NULL; //(xx,yy) n'a pas de successeur (il devient dernier)
-    printf("Added (%.0lf,%.0lf) after (%.0lf,%.0lf)\n", xx, yy, elt->x, elt->y); //DEBUG
+    //printf("Added (%.0lf,%.0lf) after (%.0lf,%.0lf)\n", xx, yy, elt->x, elt->y); //DEBUG
   } else { //Si 'elt' était en milieu de chaine
     //Le point suivant 'elt' devient le successeur de (xx,yy)
     new_point->next = elt->next;
     new_next = new_point->next; //DEBUG
-    printf("Added (%.0lf,%.0lf) between (%.0lf,%.0lf) and (%.0lf,%.0lf)\n", xx, yy, elt->x, elt->y, new_next->x, new_next->y); //DEBUG
+    //printf("Added (%.0lf,%.0lf) between (%.0lf,%.0lf) and (%.0lf,%.0lf)\n", xx, yy, elt->x, elt->y, new_next->x, new_next->y); //DEBUG
   }
   elt->next = new_point; //Le point suivant elt devient le point (xx,yy)
   
@@ -114,12 +114,13 @@ Win_Data init_general_settings(void) {
   win_data.factor = FACTOR_INIT;
   win_data.zoom_part_count = 0;
   for (i=0; i<MAX_ZOOM_PARTS; i++)
-    win_data.zoom_list[i] = NULL;
-  win_data.mandelbrot = init_image(WIDTH_MAIN, HEIGHT_MAIN);
-
+  win_data.zoom_list[i] = NULL;
+  win_data.mandelbrot = NULL;
+  win_data.julia = NULL;
   win_data.buf = malloc(sizeof(char)*BUF_MAX);
   win_data.temp_buf = malloc(sizeof(char)*BUF_MAX);
   win_data.z0_c = *(create_complexe(-0.76,0.12));
+  win_data.old_z0_c = *(create_complexe(-0.76,0.12));
   win_data.z0 = *(create_complexe(0.0,0.0));
   win_data.is_mandel_color = false; // mandelbrot en noir
 
@@ -440,6 +441,9 @@ void expand_points(Win_Data *win_data) {
 
 }
 
+
+
+
 /* **************************************************************** */
 /* ************************ Période 2 ***************************** */
 /* **************************************************************** */
@@ -448,7 +452,6 @@ Pixel* init_pixel(int R, int G, int B) {
 	Pixel* pix;
 	
 	pix = malloc(sizeof(Pixel));
-	
 	pix->r = R;
 	pix->g = G;
 	pix->b = B;
@@ -522,6 +525,6 @@ void print_mandelbrot_julia(Ez_window window, int thickness, Image *fractale, bo
     ez_draw_line(ui_window, 0, 6, progression_x, 6);
     ez_draw_line(ui_window, progression_x+1, 0, progression_x+1, 6);
     ez_send_expose(ui_window);
-    printf("%d%%\n", (int)((double)((double)WIDTH_UI/(double)fractale->height)*i)); //DEBUG progression
+    //printf("%d%%\n", (int)((double)((double)WIDTH_UI/(double)fractale->height)*i)); //DEBUG progression
 	}
 }

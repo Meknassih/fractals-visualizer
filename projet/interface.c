@@ -322,34 +322,38 @@ button get_button_id(int **bptab, int count_buttons, int mx, int my){
 
 /* Exécute une action dépendant du boutton cliqué par l'utilisateur
  * TODO: on ne devrait pas passer la window mais que Win_data      */
+ 
 void execute_button_press(Ez_window drawing_win, button id_button){
   Win_Data *win1_data = ez_get_data(drawing_win);
   switch(id_button) {
     // Choix fractales
   case B_KOCH:
-    win1_data->active_button[B_KOCH] 		= 1;
     win1_data->active_button[B_MANDELBROT]  = 0;
     win1_data->active_button[B_JULIA] 		= 0;
+    win1_data->active_button[B_KOCH] 		= 1;
     win1_data->list = koch(drawing_window, win1_data->n , win1_data->c);
+    ez_send_expose(drawing_window);
     break;
   case B_MANDELBROT:
     win1_data->active_button[B_KOCH] 		= 0;
-    win1_data->active_button[B_MANDELBROT]  = 1;
     win1_data->active_button[B_JULIA] 		= 0;
-    
+    win1_data->active_button[B_MANDELBROT]  = 1;
+        
     /* Apropos des valeurs xmin xmax ymin ymax qui permette la convertion en plan complexes
      * Il sont égals à (-1.25,1.25,-1.25,1.25) pour JULIA
      * et (-2.0,2.0,-1.25,1.25) pour Manlbrot 
      * */
-    win1_data->mandelbrot = generate_mandelbrot_julia(win1_data->z0,WIDTH_MAIN,HEIGHT_MAIN,-2.0,2.0,-1.25,1.25,0,win1_data->is_mandel_color);
+    if(win1_data->mandelbrot == NULL)
+		win1_data->mandelbrot = generate_mandelbrot_julia(win1_data->z0,WIDTH_MAIN,HEIGHT_MAIN,-2.0,2.0,-1.25,1.25,false,win1_data->is_mandel_color);
     ez_send_expose(drawing_window);
     break;
   case B_JULIA:
     win1_data->active_button[B_KOCH] 		= 0;
     win1_data->active_button[B_MANDELBROT]  = 0;
     win1_data->active_button[B_JULIA] 		= 1;
-
-    win1_data->julia = generate_mandelbrot_julia(win1_data->z0_c,WIDTH_MAIN,HEIGHT_MAIN,-1.25,1.25,-1.25,1.25,1,1);
+    
+	if(win1_data->julia == NULL)
+		win1_data->julia = generate_mandelbrot_julia(win1_data->z0_c,WIDTH_MAIN,HEIGHT_MAIN,-1.25,1.25,-1.25,1.25,true,true);
     ez_send_expose(drawing_window);
     break;
     		

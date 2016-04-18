@@ -22,7 +22,7 @@ PLISTE init_triangle(Ez_window win, double c) {
    * juste avant                                                      */
   x1 = round((win_width/2.0) - (c/2.0));
   y1 = round((win_height/2.0) - (c * (sqrt(3)/6)));
-  printf("x1 %.0lf  y1 %.0lf\n", x1, y1); //DEBUG
+  //printf("x1 %.0lf  y1 %.0lf\n", x1, y1); //DEBUG
   
   new_list = init_liste(x1, y1); //Crée une liste avec le point gauche
 
@@ -57,7 +57,7 @@ void generer_etapes(PLISTE lp) {
   nouveau_sommet.next = NULL;
   
   while(!done) {
-    printf("SEGMENT %d [(%.0lf,%.0lf),(%.0lf,%.0lf)]\n", i, begin_vertex->x, begin_vertex->y, end_vertex->x, end_vertex->y); //DEBUG
+    //printf("SEGMENT %d [(%.0lf,%.0lf),(%.0lf,%.0lf)]\n", i, begin_vertex->x, begin_vertex->y, end_vertex->x, end_vertex->y); //DEBUG
     
     /*Calculons les coordonnées des deux points produits par
      *la section du segment en 3                            */
@@ -159,12 +159,12 @@ double** convergence(Complexe z0_c, int width, int height, double xmin, double x
 					z = add_cplx(z_pow,p_cpx); // Zn+1 = Zn² +c  => avec Zn² = z_pow et C = p_cpx
 				} else {
 					plan_divergence[i][j] = k;
-					printf("%d ", k); //DEBUG
+					//printf("%d ", k); //DEBUG
 					break;
 				}
 			}
 		}
-		printf("\n"); //DEBUG
+		//printf("\n"); //DEBUG
 	}
 	
 	return plan_divergence;
@@ -172,6 +172,7 @@ double** convergence(Complexe z0_c, int width, int height, double xmin, double x
 
 Image* generate_mandelbrot_julia(Complexe z0_c, int width, int height, double xmin, double xmax, double ymin, double ymax, bool isJulia, bool isColor) {
 	Image *img;
+	Pixel* pix_temp;
 	double **plan_divergence;
 	int i,j;
 	img = init_image(width,height);
@@ -180,7 +181,7 @@ Image* generate_mandelbrot_julia(Complexe z0_c, int width, int height, double xm
 
 	for(i=0; i<img->height; i++) {
 		for(j=0; j<img->width; j++) {
-			Pixel* pix_temp = init_pixel(0,0,0); // en noir 
+			pix_temp = init_pixel(0,0,0); // en noir 
 			if(isColor)
 				if(plan_divergence[i][j] >= MAX_ITER)
 					ez_HSV_to_RGB(0,0,0, &pix_temp->r, &pix_temp->g, &pix_temp->b);
@@ -197,6 +198,7 @@ Image* generate_mandelbrot_julia(Complexe z0_c, int width, int height, double xm
 			set_pixel(img, pix_temp, i, j);
 		}
 	}
-
+	free(pix_temp);
+	free(plan_divergence);
 	return img;	
 }

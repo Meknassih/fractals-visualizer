@@ -100,14 +100,14 @@ void win1_on_button_press(Ez_event *ev) {
 
 void win1_on_motion(Ez_event *ev) {
   Win_Data *win_data = ez_get_data(ev->win);
-
-  win_data->x1_frame = ev->mx - (win_data->width/win_data->factor)/2;
-  win_data->y1_frame = ev->my - (win_data->height/win_data->factor)/2;
-  win_data->x2_frame = ev->mx + (win_data->width/win_data->factor)/2;
-  win_data->y2_frame = ev->my + (win_data->height/win_data->factor)/2;
-
-  ez_set_data(ev->win, win_data);
-  ez_send_expose(ev->win);
+  if(win_data->active_button[B_KOCH]) {
+		win_data->x1_frame = ev->mx - (win_data->width/win_data->factor)/2;
+		win_data->y1_frame = ev->my - (win_data->height/win_data->factor)/2;
+		win_data->x2_frame = ev->mx + (win_data->width/win_data->factor)/2;
+		win_data->y2_frame = ev->my + (win_data->height/win_data->factor)/2;
+		ez_set_data(ev->win, win_data);
+		ez_send_expose(ev->win);
+	}
 }
 
 void win1_on_close(Ez_event *ev) {
@@ -220,6 +220,8 @@ void win3_on_keypress(Ez_event *ev) {
   Win_Data *win1_data = ez_get_data(drawing_window);
   int tmp_n=0;
   double tmp_c = 0.0;
+  double tmp_z0c_reel = 0.0;	
+  double tmp_z0c_imaginaire = 0.0;
   
   int k = text_input(ev, win1_data->temp_buf);
   
@@ -228,30 +230,56 @@ void win3_on_keypress(Ez_event *ev) {
     ez_set_data(drawing_window, win1_data);
     
     if(win1_data->active_button[B_N]) {  // Si modification de n !
+		ez_window_show(popup_window, false);
 		tmp_n = win1_data->n; 
 		win1_data->n = atoi(win1_data->buf); // convertir en entier
-		ez_send_expose(ui_window); // Afficher la nouvelle valeur sur l'interface graphique
-		if(win1_data->n != tmp_n) { // Ne regénére un nouveau koch que si la nouvelle valeur de n est différente de l'ancienne !
+		if(win1_data->n != tmp_n && win1_data->active_button[B_KOCH]) { // Ne regénére un nouveau koch que si la nouvelle valeur de n est différente de l'ancienne !
 			win1_data->list = koch(drawing_window, win1_data->n , win1_data->c);
 		}
 	}
 	
     if(win1_data->active_button[B_C]) {
+		ez_window_show(popup_window, false);
 		tmp_c = win1_data->c;
 		win1_data->c = atoi(win1_data->buf); // convertir en entier
-		ez_send_expose(ui_window); // Afficher la nouvelle valeur sur l'interface graphique
-		if(win1_data->c != tmp_c) { // Ne regénére un nouveau koch que si la nouvelle valeur de n est différente de l'ancienne !
+		if(win1_data->c != tmp_c && win1_data->active_button[B_KOCH]) { // Ne regénére un nouveau koch que si la nouvelle valeur de n est différente de l'ancienne !
 			win1_data->list = koch(drawing_window, win1_data->n , win1_data->c);
 		}
 	}
 	
     if(win1_data->active_button[B_DELAY]) {
+		ez_window_show(popup_window, false);
 		win1_data->delay_anim = atoi(win1_data->buf); // convertir en entier
-		ez_send_expose(ui_window); // Afficher la nouvelle valeur sur l'interface graphique
 	}
 	
+	if(win1_data->active_button[B_Z0C_REEL]) {  // Si modification de n !
+      ez_window_show(popup_window, false);
+      tmp_z0c_reel = (win1_data->z0_c).reel; 
+      (win1_data->z0_c).reel = atof(win1_data->buf);
+      if((win1_data->z0_c).reel != tmp_z0c_reel && win1_data->active_button[B_JULIA]) { // Ne regénére un nouveau koch que si la nouvelle valeur de n est différente de l'ancienne !
+        win1_data->julia = generate_mandelbrot_julia(win1_data->z0_c,WIDTH_MAIN,HEIGHT_MAIN,-1.25,1.25,-1.25,1.25,true,true);
+      }
+    }
+
+    if(win1_data->active_button[B_Z0C_IMAGINAIRE]) {  // Si modification de n !
+      ez_window_show(popup_window, false);
+      tmp_z0c_imaginaire = (win1_data->z0_c).imaginaire; 
+      (win1_data->z0_c).imaginaire = atof(win1_data->buf);
+      if((win1_data->z0_c).imaginaire != tmp_z0c_imaginaire  && win1_data->active_button[B_JULIA]) { // Ne regénére un nouveau koch que si la nouvelle valeur de n est différente de l'ancienne !
+        win1_data->julia = generate_mandelbrot_julia(win1_data->z0_c,WIDTH_MAIN,HEIGHT_MAIN,-1.25,1.25,-1.25,1.25,true,true);
+      }
+    }
+    
+    free(win1_data->buf);
+	win1_data->buf = malloc(sizeof(char)*BUF_MAX);
+
+	win1_data->active_button[B_N] = 0;
+	win1_data->active_button[B_C] = 0;
+	win1_data->active_button[B_DELAY] = 0;
+	win1_data->active_button[B_Z0C_REEL] = 0;
+	win1_data->active_button[B_Z0C_IMAGINAIRE] = 0;
+	ez_send_expose(ui_window); // Afficher la nouvelle valeur sur l'interface graphique
 	ez_send_expose(drawing_window);
-	ez_window_show(popup_window, false);
   }
   
   if (k > 0) ez_send_expose(ev->win);

@@ -16,7 +16,7 @@
 #define FACTOR_INIT 4
 #define ORDRE_INIT 2
 #define TAILLE_INIT 300
-#define BUF_MAX 6
+#define BUF_MAX 9
 
 extern Ez_window drawing_window, ui_window, popup_window;
 
@@ -95,6 +95,7 @@ typedef struct {
   Image *mandelbrot; //Matrice de pixels correspondant à l'ensemble de Mandelbrot
   Image *julia; //Matrice de pixels correspondant à l'ensemble de Julia
   Complexe z0_c; // Valeur c pour les différents Julia
+  Complexe old_z0_c;
   Complexe z0; // Z0 = 0+0i pour Mandelbrot
   bool is_mandel_color; // Couleur mandelbrot
 } Win_Data;

@@ -425,6 +425,8 @@ void execute_button_press(Ez_window drawing_win, button id_button){
 	win1_data->active_button[B_DELAY] = 0;
 	win1_data->active_button[B_Z0C_REEL] = 0;
 	win1_data->active_button[B_Z0C_IMAGINAIRE] = 0;
+    win1_data->active_button[B_SAVE]  = 0;
+	win1_data->active_button[B_LOAD]  = 0;
 	ez_window_show(popup_window, true);
 
     break;
@@ -434,6 +436,8 @@ void execute_button_press(Ez_window drawing_win, button id_button){
 	win1_data->active_button[B_DELAY] = 0;
 	win1_data->active_button[B_Z0C_REEL] = 0;
 	win1_data->active_button[B_Z0C_IMAGINAIRE] = 0;
+    win1_data->active_button[B_SAVE]  = 0;
+	win1_data->active_button[B_LOAD]  = 0;
 	ez_window_show(popup_window, true);
     break;
   case B_DELAY:
@@ -442,6 +446,8 @@ void execute_button_press(Ez_window drawing_win, button id_button){
 	win1_data->active_button[B_DELAY] = 1;
 	win1_data->active_button[B_Z0C_REEL] = 0;
 	win1_data->active_button[B_Z0C_IMAGINAIRE] = 0;
+    win1_data->active_button[B_SAVE]  = 0;
+	win1_data->active_button[B_LOAD]  = 0;
 	ez_window_show(popup_window, true);
     break;
   case B_Z0C_REEL:
@@ -450,6 +456,8 @@ void execute_button_press(Ez_window drawing_win, button id_button){
 	win1_data->active_button[B_DELAY] = 0;
 	win1_data->active_button[B_Z0C_REEL] = 1;
 	win1_data->active_button[B_Z0C_IMAGINAIRE] = 0;
+    win1_data->active_button[B_SAVE]  = 0;
+	win1_data->active_button[B_LOAD]  = 0;
 	ez_window_show(popup_window, true);
     break;
    case B_Z0C_IMAGINAIRE:
@@ -458,6 +466,8 @@ void execute_button_press(Ez_window drawing_win, button id_button){
 	win1_data->active_button[B_DELAY] = 0;
 	win1_data->active_button[B_Z0C_REEL] = 0;
 	win1_data->active_button[B_Z0C_IMAGINAIRE] = 1;
+    win1_data->active_button[B_SAVE]  = 0;
+	win1_data->active_button[B_LOAD]  = 0;
 	ez_window_show(popup_window, true);
     break;
     // Choix du type de sauvegarde et chargement
@@ -474,26 +484,26 @@ void execute_button_press(Ez_window drawing_win, button id_button){
 			
     // Boutton sauvegarde
   case B_SAVE:
+	win1_data->active_button[B_N] = 0;
+	win1_data->active_button[B_C] = 0;
+	win1_data->active_button[B_DELAY] = 0;
+	win1_data->active_button[B_Z0C_REEL] = 0;
+	win1_data->active_button[B_Z0C_IMAGINAIRE] = 0;
     win1_data->active_button[B_SAVE]  = 1;
-    //save_pixmap(win1_data->save_file, win1_data->list, win1_data->width, win1_data->height);
-    if (win1_data->active_button[B_PPM]) {
-      if (win1_data->active_button[B_MANDELBROT])
-        save_img(win1_data->mandelbrot, "savetest");
-      else if (win1_data->active_button[B_JULIA])
-        save_img(win1_data->julia, "savetest");
-    }
-    win1_data->active_button[B_SAVE]  = 0;
+	win1_data->active_button[B_LOAD]  = 0;
+	ez_window_show(popup_window, true);
     break;
 		
     // Boutton Chargement
   case B_LOAD:
-    //load_pixmap(win1_data->save_file, &win1_data->width, &win1_data->height);
-    win1_data->active_button[B_LOAD]  = true;
-    if (win1_data->active_button[B_PPM]) {
-      load_img("savetest"); //Marche aussi pour Julia
-    }
-    win1_data->active_button[B_LOAD]  = false;
-    ez_send_expose(drawing_window);
+  	win1_data->active_button[B_N] = 0;
+	win1_data->active_button[B_C] = 0;
+	win1_data->active_button[B_DELAY] = 0;
+	win1_data->active_button[B_Z0C_REEL] = 0;
+	win1_data->active_button[B_Z0C_IMAGINAIRE] = 0;
+	win1_data->active_button[B_SAVE]  = 0;
+	win1_data->active_button[B_LOAD]  = 1;
+	ez_window_show(popup_window, true);
     break;
 
   default:

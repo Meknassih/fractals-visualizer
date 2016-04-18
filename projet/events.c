@@ -205,11 +205,20 @@ void win3_on_expose(Ez_event *ev) {
 	
 	ez_set_nfont(1);
 	ez_set_color(ez_black);
-	ez_draw_text(ev->win, EZ_MC, WIDTH_POPUP/2, (HEIGHT_POPUP/2)-20, "Entrez la valeur :");
-	text_display(popup_window, WIDTH_POPUP/2-50, (HEIGHT_POPUP/2)-5, win1_data->temp_buf, win1_data->buf);
-	ez_set_nfont(0);
-	ez_set_color(ez_grey);
-	ez_draw_text(ev->win, EZ_MC, WIDTH_POPUP/2, (HEIGHT_POPUP/2)+20, "ENTREE pour valider");
+	if(win1_data->active_button[B_SAVE] || win1_data->active_button[B_LOAD]) {
+		ez_draw_text(ev->win, EZ_MC, WIDTH_POPUP/2, (HEIGHT_POPUP/2)-20, "Entrez le nom du fichier :");
+		text_display(popup_window, WIDTH_POPUP/2-50, (HEIGHT_POPUP/2)-5, win1_data->temp_buf, win1_data->buf);
+		ez_set_nfont(0);
+		ez_set_color(ez_grey);
+		ez_draw_text(ev->win, EZ_MC, WIDTH_POPUP/2, (HEIGHT_POPUP/2)+20, "ENTREE pour valider");
+	} else {
+		ez_draw_text(ev->win, EZ_MC, WIDTH_POPUP/2, (HEIGHT_POPUP/2)-20, "Entrez la valeur :");
+		text_display(popup_window, WIDTH_POPUP/2-50, (HEIGHT_POPUP/2)-5, win1_data->temp_buf, win1_data->buf);
+		ez_set_nfont(0);
+		ez_set_color(ez_grey);
+		ez_draw_text(ev->win, EZ_MC, WIDTH_POPUP/2, (HEIGHT_POPUP/2)+20, "ENTREE pour valider");
+	}
+
 	
 
 	//ez_send_expose(drawing_window);
@@ -270,14 +279,33 @@ void win3_on_keypress(Ez_event *ev) {
       }
     }
     
-    free(win1_data->buf);
-	win1_data->buf = malloc(sizeof(char)*BUF_MAX);
-
-	win1_data->active_button[B_N] = 0;
-	win1_data->active_button[B_C] = 0;
-	win1_data->active_button[B_DELAY] = 0;
-	win1_data->active_button[B_Z0C_REEL] = 0;
-	win1_data->active_button[B_Z0C_IMAGINAIRE] = 0;
+    if(win1_data->active_button[B_SAVE]) {
+		ez_window_show(popup_window, false);
+		win1_data->save_file = win1_data->buf;
+		if(win1_data->active_button[B_PPM]) {
+			if (win1_data->active_button[B_MANDELBROT])
+				save_img(win1_data->mandelbrot, win1_data->save_file);
+			else if (win1_data->active_button[B_JULIA])
+				save_img(win1_data->julia, win1_data->save_file);
+		} else if (win1_data->active_button[B_PIXMAP]) {
+			if(win1_data->active_button[B_KOCH])
+				save_pixmap(win1_data->save_file, win1_data->list, win1_data->width, win1_data->height);
+		}
+	}
+    
+    if(win1_data->active_button[B_LOAD]) {
+		ez_window_show(popup_window, false);
+		win1_data->save_file = win1_data->buf;
+		if(win1_data->active_button[B_PPM]) {
+			if (win1_data->active_button[B_MANDELBROT] || win1_data->active_button[B_JULIA])
+				load_img(win1_data->save_file);
+		} else if (win1_data->active_button[B_PIXMAP]) {
+			if(win1_data->active_button[B_KOCH])
+				load_pixmap(win1_data->save_file, &win1_data->width, &win1_data->height);
+		}
+	}
+	
+	
 	ez_send_expose(ui_window); // Afficher la nouvelle valeur sur l'interface graphique
 	ez_send_expose(drawing_window);
   }

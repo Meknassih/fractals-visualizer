@@ -43,6 +43,11 @@ typedef enum {
   PIXMAP, PPM
 } svmode;
 
+typedef enum {
+  SIMULTANE,
+  SEQUENTIEL
+} Expose_Mode;
+
 /* **************************************************************** */
 /* ************************* Période 2 **************************** */
 /* **************************************************************** */
@@ -77,7 +82,10 @@ typedef struct {
   int n; //Ordre de la fractale
   int configure_count; //Nombre de ConfigureNotify déclenchés
   double c; //Largeur du premier segment (koch)
+  PLISTE list_anim[10];
+  Expose_Mode mode_anim;
   int delay_anim; //ms entre chaque flocon
+  int step_anim;
   int width, height; //Dimensions de la fenêtre à tout moment
   svmode mode; //Mode de sauvegarde (PIX, PPM)
   char *save_file; //Nom du fichier de sauvegarde sans ext

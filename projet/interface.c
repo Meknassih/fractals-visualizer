@@ -331,6 +331,9 @@ void execute_button_press(Ez_window drawing_win, button id_button){
     win1_data->active_button[B_MANDELBROT]  = 0;
     win1_data->active_button[B_JULIA] 		= 0;
     win1_data->active_button[B_KOCH] 		= 1;
+    win1_data->mode = PIXMAP;
+    win1_data->active_button[B_PPM] = 0;
+    win1_data->active_button[B_PIXMAP] = 1;
     win1_data->list = koch(drawing_window, win1_data->n , win1_data->c);
     ez_send_expose(drawing_window);
     break;
@@ -338,7 +341,9 @@ void execute_button_press(Ez_window drawing_win, button id_button){
     win1_data->active_button[B_KOCH] 		= 0;
     win1_data->active_button[B_JULIA] 		= 0;
     win1_data->active_button[B_MANDELBROT]  = 1;
-        
+    win1_data->mode = PPM;
+    win1_data->active_button[B_PPM] = 1;
+    win1_data->active_button[B_PIXMAP] = 0;
     /* Apropos des valeurs xmin xmax ymin ymax qui permette la convertion en plan complexes
      * Il sont égals à (-1.25,1.25,-1.25,1.25) pour JULIA
      * et (-2.0,2.0,-1.25,1.25) pour Manlbrot 
@@ -351,7 +356,9 @@ void execute_button_press(Ez_window drawing_win, button id_button){
     win1_data->active_button[B_KOCH] 		= 0;
     win1_data->active_button[B_MANDELBROT]  = 0;
     win1_data->active_button[B_JULIA] 		= 1;
-    
+    win1_data->mode = PPM;
+    win1_data->active_button[B_PPM] = 1;
+    win1_data->active_button[B_PIXMAP] = 0;
 	if(win1_data->julia == NULL)
 		win1_data->julia = generate_mandelbrot_julia(win1_data->z0_c,WIDTH_MAIN,HEIGHT_MAIN,-1.25,1.25,-1.25,1.25,true,true);
     ez_send_expose(drawing_window);
@@ -359,14 +366,25 @@ void execute_button_press(Ez_window drawing_win, button id_button){
     		
     // Choix animations
   case B_ANIME1:
-    win1_data->active_button[B_ANIME1] = 1;
-    win1_data->active_button[B_ANIME2] = 0;
-    win1_data->active_button[B_STOPANIM] = 0;
+	win1_data->active_button[B_ANIME2] = 0;
+	win1_data->active_button[B_STOPANIM] = 0;
+	printf("simultané \n");
+	win1_data->mode_anim = SIMULTANE;
+	ez_start_timer(drawing_window, -1); //Supprime le timer
+
+	win1_data->active_button[B_ANIME1] = 1;
+	ez_send_expose(drawing_window); //Force à redessiner toutes les formes
     break;
   case B_ANIME2:
     win1_data->active_button[B_ANIME1] = 0;
-    win1_data->active_button[B_ANIME2] = 1;
     win1_data->active_button[B_STOPANIM] = 0;
+	win1_data->mode_anim = SEQUENTIEL;
+	win1_data->step_anim = 0; //Remet l'animation à 0
+    ez_start_timer(drawing_window, win1_data->delay_anim); //Met en place le timer
+    
+    win1_data->active_button[B_ANIME2] = 1;
+	ez_send_expose(drawing_window); //Force à redessiner toutes les formes
+
     break;
   case B_ANIME3:
     if (win1_data->active_button[B_ANIME3]) win1_data->active_button[B_ANIME3] = 0;
@@ -472,14 +490,10 @@ void execute_button_press(Ez_window drawing_win, button id_button){
     break;
     // Choix du type de sauvegarde et chargement
   case B_PIXMAP:
-    win1_data->active_button[B_PIXMAP]  = 1;
-    win1_data->active_button[B_PPM]  = 0;
-    win1_data->mode = PIXMAP;
+
     break;
   case B_PPM:
-    win1_data->active_button[B_PIXMAP]  = 0;
-    win1_data->active_button[B_PPM]  = 1;
-    win1_data->mode = PPM;
+
     break;
 			
     // Boutton sauvegarde

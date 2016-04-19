@@ -22,8 +22,8 @@ endif
 
 all: projet
 
-projet: ez-draw.o ez-image.o cplx.o generate.o interface.o util.o events.o main.o
-	$(CC) ez-draw.o ez-image.o cplx.o generate.o interface.o util.o events.o main.o -o projet $(GFLAGS) $(MFLAGS)
+projet: ez-draw.o ez-image.o cplx.o generate.o interface.o animation.o util.o events.o main.o
+	$(CC) ez-draw.o ez-image.o cplx.o generate.o interface.o animation.o util.o events.o main.o -o projet $(GFLAGS) $(MFLAGS)
 
 ez-draw.o: ez-draw.c headers/ez-draw.h
 	$(CC) $(CFLAGS) ez-draw.c $(GFLAGS)
@@ -40,6 +40,9 @@ generate.o: generate.c headers/generate.h
 interface.o: interface.c headers/interface.h
 	$(CC) $(CFLAGS) interface.c $(MFLAGS)
 
+animation.o: interface.c headers/animation.h
+	$(CC) $(CFLAGS) animation.c $(MFLAGS)
+	
 util.o: util.c headers/util.h
 	$(CC) $(CFLAGS) util.c $(MFLAGS)
 

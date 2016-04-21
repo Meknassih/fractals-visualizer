@@ -31,6 +31,8 @@ void execute_button_press(Ez_window drawing_win, button id_button);
 Ez_image * init_background();
 void init_images_buttons(Win_Data *win1_data);
 void init_buttons(Win_Data *win1_data);
+void init_active_buttons_zoom_text_entry(Win_Data *win1_data, bool r);
+void valid_text_entry(Win_Data *win1_data);
 int text_input(Ez_event *ev, char *s);
 void text_display(Ez_window win, int x, int y, char *s1, char *s2);
 

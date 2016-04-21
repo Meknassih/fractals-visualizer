@@ -263,13 +263,13 @@ void draw_text(Ez_window ui_win, Ez_window drawing_win) {
 	ez_draw_text (ui_win, EZ_TL, 10, 10, "Choix de fractales");
 	ez_draw_text (ui_win, EZ_TL, 260, 10, "Zoom");
 	ez_draw_text (ui_win, EZ_TL, 10, 75, "Choix animations (Koch seulement)");
-	ez_draw_text (ui_win, EZ_TL, 10, 180, "Parametre du flocon de koch");
-	ez_draw_text (ui_win, EZ_TL, 10, 260, "Parametre de Mandelbrot");
-	ez_draw_text (ui_win, EZ_TL, 10, 320, "Parametre de Julia");
-	ez_draw_text (ui_win, EZ_TL, 10, 400, "Parametre de sauvegarde");
+	ez_draw_text (ui_win, EZ_TL, 10, 180, "Parametres du flocon de koch");
+	ez_draw_text (ui_win, EZ_TL, 10, 260, "Parametres de Mandelbrot");
+	ez_draw_text (ui_win, EZ_TL, 10, 320, "Parametres de Julia");
+	ez_draw_text (ui_win, EZ_TL, 10, 400, "Parametres de sauvegarde");
 	// Paramètres Koch
 	ez_set_color(ez_black);
-	ez_draw_text (ui_win, EZ_TL, 30, 200, "Nombre d'iteration (n)         :");
+	ez_draw_text (ui_win, EZ_TL, 30, 200, "Nombre d'iterations (n)         :");
 	ez_draw_text (ui_win, EZ_TL, 235, 200, "%d", win1_data->n);
 	ez_draw_rectangle (ui_win, 230,197,260,212);
 
@@ -319,7 +319,102 @@ button get_button_id(int **bptab, int count_buttons, int mx, int my){
 
 /* Exécute une action dépendant du boutton cliqué par l'utilisateur
  * TODO: on ne devrait pas passer la window mais que Win_data      */
- 
+void init_active_buttons_zoom_text_entry(Win_Data *win1_data, bool r) {
+	if(r) {
+		win1_data->active_button[B_N] = false;
+		win1_data->active_button[B_C] = false;
+		win1_data->active_button[B_DELAY] = false;
+		win1_data->active_button[B_Z0C_REEL] = false;
+		win1_data->active_button[B_Z0C_IMAGINAIRE] = false;
+		win1_data->active_button[B_SAVE]  = false;
+		win1_data->active_button[B_LOAD]  = false;
+		strcpy(win1_data->temp_buf, ""); // initialisation de temp_buf pour le popup saisi de text
+	} else {
+		win1_data->active_button[B_ZOOM4]  = false;
+		win1_data->active_button[B_ZOOM6]  = false;
+		win1_data->active_button[B_ZOOM8]  = false;
+		win1_data->active_button[B_ZOOM10] = false;
+	}
+}
+
+void valid_text_entry(Win_Data *win1_data) {
+	  /* Ces valeurs temporaires nous permettes d'éviter la regénération
+	* des fractales si les nouvelles valeurs saisi par l'utilisateur
+	* leur sont égals
+	* */
+	int tmp_n=0;
+	double tmp_c = 0.0;
+	double tmp_z0c_reel = 0.0;	
+	double tmp_z0c_imaginaire = 0.0;
+	
+	if(win1_data->active_button[B_N]) {  // Si modification de n !
+		ez_window_show(popup_window, false);
+		tmp_n = win1_data->n; 
+		win1_data->n = atoi(win1_data->buf); // convertir en entier
+		if(win1_data->n != tmp_n && win1_data->active_button[B_KOCH]) { // Ne regénére un nouveau koch que si la nouvelle valeur de n est différente de l'ancienne !
+			win1_data->list = koch(drawing_window, win1_data->n , win1_data->c);
+		}
+	}
+	
+	if(win1_data->active_button[B_C]) {
+		ez_window_show(popup_window, false);
+		tmp_c = win1_data->c;
+		win1_data->c = atoi(win1_data->buf); // convertir en entier
+		if(win1_data->c != tmp_c && win1_data->active_button[B_KOCH]) {
+			win1_data->list = koch(drawing_window, win1_data->n , win1_data->c);
+		}
+	}
+	
+    if(win1_data->active_button[B_DELAY]) {
+		ez_window_show(popup_window, false);
+		win1_data->delay_anim = atoi(win1_data->buf); // convertir en entier
+	}
+	
+	if(win1_data->active_button[B_Z0C_REEL]) {  
+      ez_window_show(popup_window, false);
+      tmp_z0c_reel = (win1_data->z0_c).reel; 
+      (win1_data->z0_c).reel = atof(win1_data->buf);
+      if((win1_data->z0_c).reel != tmp_z0c_reel && win1_data->active_button[B_JULIA]) { 
+        win1_data->julia = generate_mandelbrot_julia(win1_data->z0_c,WIDTH_MAIN,HEIGHT_MAIN,-1.25,1.25,-1.25,1.25,true,true);
+      }
+    }
+
+    if(win1_data->active_button[B_Z0C_IMAGINAIRE]) {  // Si modification de n !
+      ez_window_show(popup_window, false);
+      tmp_z0c_imaginaire = (win1_data->z0_c).imaginaire; 
+      (win1_data->z0_c).imaginaire = atof(win1_data->buf);
+      if((win1_data->z0_c).imaginaire != tmp_z0c_imaginaire  && win1_data->active_button[B_JULIA]) { 
+        win1_data->julia = generate_mandelbrot_julia(win1_data->z0_c,WIDTH_MAIN,HEIGHT_MAIN,-1.25,1.25,-1.25,1.25,true,true);
+      }
+    }
+    
+    if(win1_data->active_button[B_SAVE]) {
+		ez_window_show(popup_window, false);
+		win1_data->save_file = win1_data->buf;
+		if(win1_data->active_button[B_PPM]) {
+			if (win1_data->active_button[B_MANDELBROT])
+				save_img(win1_data->mandelbrot, win1_data->save_file);
+			else if (win1_data->active_button[B_JULIA])
+				save_img(win1_data->julia, win1_data->save_file);
+		} else if (win1_data->active_button[B_PIXMAP]) {
+			if(win1_data->active_button[B_KOCH])
+				save_pixmap(win1_data->save_file, win1_data->list, win1_data->width, win1_data->height);
+		}
+	}
+    
+    if(win1_data->active_button[B_LOAD]) {
+		ez_window_show(popup_window, false);
+		win1_data->save_file = win1_data->buf;
+		if(win1_data->active_button[B_PPM]) {
+			printf("Le system de charge PPM pas encore fonctionnel");
+		} else if (win1_data->active_button[B_PIXMAP]) {
+			if(win1_data->active_button[B_KOCH])
+				win1_data->list = load_pixmap(win1_data->save_file, &win1_data->width, &win1_data->height);
+		}
+	}
+	
+}
+
 void execute_button_press(Ez_window drawing_win, button id_button){
 	Win_Data *win1_data = ez_get_data(drawing_win);
 
@@ -343,7 +438,7 @@ void execute_button_press(Ez_window drawing_win, button id_button){
 			win1_data->active_button[B_PPM] = true;
 			win1_data->active_button[B_PIXMAP] = false;
 			if(win1_data->mandelbrot == NULL)
-				win1_data->mandelbrot = generate_mandelbrot_julia(win1_data->z0,WIDTH_MAIN,HEIGHT_MAIN,-2.0,2.0,-1.25,1.25,false,win1_data->is_mandel_color);
+			win1_data->mandelbrot = generate_mandelbrot_julia(win1_data->z0,WIDTH_MAIN,HEIGHT_MAIN,-2.0,2.0,-1.25,1.25,false,win1_data->is_mandel_color);
 			ez_send_expose(drawing_window);
 			break;
 		case B_JULIA:
@@ -362,28 +457,33 @@ void execute_button_press(Ez_window drawing_win, button id_button){
 		case B_ANIME1:
 			win1_data->active_button[B_ANIME2] = 0;
 			win1_data->active_button[B_STOPANIM] = 0;
-			printf("simultané \n");
-			win1_data->mode_anim = SIMULTANE;
-			ez_start_timer(drawing_window, -1); //Supprime le timer
 			win1_data->active_button[B_ANIME1] = 1;
-			ez_send_expose(drawing_window); //Force à redessiner toutes les formes
+			win1_data->mode_anim = CIRCULAIRE;
+			
+			win1_data->step_anim = 0; //Remet l'animation à 0
+			ez_start_timer(drawing_window, win1_data->delay_anim); //Met en place le timer
+			
+			
+
 			break;
 		case B_ANIME2:
 			win1_data->active_button[B_ANIME1] = 0;
 			win1_data->active_button[B_STOPANIM] = 0;
-			win1_data->mode_anim = SEQUENTIEL;
+			win1_data->active_button[B_ANIME2] = 1;
+			win1_data->mode_anim = FINIE;
 			win1_data->step_anim = 0; //Remet l'animation à 0
 			ez_start_timer(drawing_window, win1_data->delay_anim); //Met en place le timer
-			win1_data->active_button[B_ANIME2] = 1;
-			ez_send_expose(drawing_window); //Force à redessiner toutes les formes
+
 			break;
 		case B_ANIME3:
 			if (win1_data->active_button[B_ANIME3]) win1_data->active_button[B_ANIME3] = 0;
 			else win1_data->active_button[B_ANIME3] = 1;
 			break;
 		case B_STOPANIM:
-			if (win1_data->active_button[B_STOPANIM]) win1_data->active_button[B_STOPANIM] = 0;
-			else win1_data->active_button[B_STOPANIM] = 1;
+			win1_data->active_button[B_ANIME1] = 0;
+			win1_data->active_button[B_ANIME2] = 0;
+			win1_data->active_button[B_STOPANIM] = 1;
+			ez_send_expose(drawing_window); //Force à redessiner toutes les formes
 			break;
 
 		/* Choix zoom */

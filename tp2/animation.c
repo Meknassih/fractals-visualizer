@@ -82,7 +82,6 @@ void win1_event(Ez_event *ev) {
       data = ez_get_data(ev->win);
       data->mode = SIMULTANE;
       ez_set_data(ev->win, data);
-      ez_start_timer(ev->win, -1); //Supprime le timer
       printf("Mode SIM (%d)\n", data->mode);
       ez_send_expose(ev->win); //Force à redessiner toutes les formes
       break;

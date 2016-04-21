@@ -29,10 +29,12 @@ void win1_on_expose(Ez_event *ev) {
 		print_mandelbrot_julia(ev->win, 1, win1_data->mandelbrot, 0);
 	else if (win1_data->active_button[B_JULIA])
 		print_mandelbrot_julia(ev->win, 1, win1_data->julia, 1);
-	else if (win1_data->active_button[B_ANIME1])
-		animation(ev->win, win1_data->mode_anim, win1_data->n);
-	else if (win1_data->active_button[B_ANIME2])
-		animation(ev->win, win1_data->mode_anim, win1_data->n);
+	else if (win1_data->active_button[B_ANIME1] && !win1_data->active_button[B_STOPANIM])
+		animation(ev->win, win1_data);
+	else if (win1_data->active_button[B_ANIME2] && !win1_data->active_button[B_STOPANIM]) {
+		animation(ev->win, win1_data);
+		printf("Step anim : 	%d \n", win1_data->step_anim); // debug
+	}
 }
 
 
@@ -104,11 +106,13 @@ void win1_on_button_press(Ez_event *ev) {
 
 void win1_on_timer(Ez_event *ev) {
 	Win_Data *win_data = ez_get_data(ev->win);
+
 	if (win_data->step_anim < win_data->n)
 		win_data->step_anim+=1;
-	else
+	if (win_data->step_anim == win_data->n)
 		win_data->step_anim=0;
 		
+	
 	ez_set_data(ev->win, win_data);
 	ez_send_expose(ev->win);
 	ez_start_timer(ev->win, win_data->delay_anim);
@@ -252,10 +256,10 @@ void win3_on_keypress(Ez_event *ev) {
 	Win_Data *win1_data = ez_get_data(drawing_window);
 	int k = text_input(ev, win1_data->temp_buf);
 
-	/* Lorsque l'utilisateur clique sur ENTREE */
+	/* Lorsque l'utilisateur clique sur ENTREE */ 
 	if (k == 2) {
 		strncpy(win1_data->buf, win1_data->temp_buf, BUF_MAX); // récupère le texte saisi
-		valid_text_entry(win1_data); // valide le texte saisi
+		valid_text_entry(win1_data); // valide le texte saisi 
 		ez_set_data(drawing_window, win1_data); // envoie les donner a win1_data
 		ez_send_expose(ui_window); // Afficher la nouvelle valeur sur l'interface graphique
 		ez_send_expose(drawing_window); // Dessine sur notre fenêtre d'affichage de fractals

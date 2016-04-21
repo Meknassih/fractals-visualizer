@@ -447,8 +447,6 @@ void expand_points(Win_Data *win_data) {
 }
 
 
-
-
 /* **************************************************************** */
 /* ************************ Période 2 ***************************** */
 /* **************************************************************** */
@@ -507,6 +505,7 @@ void free_image(Image *img) {
 }
 
 void print_mandelbrot_julia(Ez_window window, int thickness, Image *fractale, bool isJulia) { // isJulia pas nécéssaire, à retirer
+	
 	int i,j, progression_x;
 	ez_set_thick(thickness);
 	Pixel ***plan = fractale->plan;
@@ -532,4 +531,100 @@ void print_mandelbrot_julia(Ez_window window, int thickness, Image *fractale, bo
 		ez_send_expose(ui_window);
 		//printf("%d%%\n", (int)((double)((double)WIDTH_UI/(double)fractale->height)*i)); //DEBUG progression
 	}
+}
+
+void init_active_buttons_zoom_text_entry(Win_Data *win1_data, bool r) {
+	if(r) {
+		win1_data->active_button[B_N] = false;
+		win1_data->active_button[B_C] = false;
+		win1_data->active_button[B_DELAY] = false;
+		win1_data->active_button[B_Z0C_REEL] = false;
+		win1_data->active_button[B_Z0C_IMAGINAIRE] = false;
+		win1_data->active_button[B_SAVE]  = false;
+		win1_data->active_button[B_LOAD]  = false;
+		strcpy(win1_data->temp_buf, ""); // initialisation de temp_buf pour le popup saisi de text
+	} else {
+		win1_data->active_button[B_ZOOM4]  = false;
+		win1_data->active_button[B_ZOOM6]  = false;
+		win1_data->active_button[B_ZOOM8]  = false;
+		win1_data->active_button[B_ZOOM10] = false;
+	}
+}
+
+void valid_text_entry(Win_Data *win1_data) {
+	  /* Ces valeurs temporaires nous permettes d'éviter la regénération
+	* des fractales si les nouvelles valeurs saisi par l'utilisateur
+	* leur sont égals
+	* */
+	int tmp_n=0;
+	double tmp_c = 0.0;
+	double tmp_z0c_reel = 0.0;	
+	double tmp_z0c_imaginaire = 0.0;
+	
+	if(win1_data->active_button[B_N]) {  // Si modification de n !
+		ez_window_show(popup_window, false);
+		tmp_n = win1_data->n; 
+		win1_data->n = atoi(win1_data->buf); // convertir en entier
+		if(win1_data->n != tmp_n && win1_data->active_button[B_KOCH]) { // Ne regénére un nouveau koch que si la nouvelle valeur de n est différente de l'ancienne !
+			win1_data->list = koch(drawing_window, win1_data->n , win1_data->c);
+		}
+	}
+	
+	if(win1_data->active_button[B_C]) {
+		ez_window_show(popup_window, false);
+		tmp_c = win1_data->c;
+		win1_data->c = atoi(win1_data->buf); // convertir en entier
+		if(win1_data->c != tmp_c && win1_data->active_button[B_KOCH]) {
+			win1_data->list = koch(drawing_window, win1_data->n , win1_data->c);
+		}
+	}
+	
+    if(win1_data->active_button[B_DELAY]) {
+		ez_window_show(popup_window, false);
+		win1_data->delay_anim = atoi(win1_data->buf); // convertir en entier
+	}
+	
+	if(win1_data->active_button[B_Z0C_REEL]) {  
+      ez_window_show(popup_window, false);
+      tmp_z0c_reel = (win1_data->z0_c).reel; 
+      (win1_data->z0_c).reel = atof(win1_data->buf);
+      if((win1_data->z0_c).reel != tmp_z0c_reel && win1_data->active_button[B_JULIA]) { 
+        win1_data->julia = generate_mandelbrot_julia(win1_data->z0_c,WIDTH_MAIN,HEIGHT_MAIN,-1.25,1.25,-1.25,1.25,true,true);
+      }
+    }
+
+    if(win1_data->active_button[B_Z0C_IMAGINAIRE]) {  // Si modification de n !
+      ez_window_show(popup_window, false);
+      tmp_z0c_imaginaire = (win1_data->z0_c).imaginaire; 
+      (win1_data->z0_c).imaginaire = atof(win1_data->buf);
+      if((win1_data->z0_c).imaginaire != tmp_z0c_imaginaire  && win1_data->active_button[B_JULIA]) { 
+        win1_data->julia = generate_mandelbrot_julia(win1_data->z0_c,WIDTH_MAIN,HEIGHT_MAIN,-1.25,1.25,-1.25,1.25,true,true);
+      }
+    }
+    
+    if(win1_data->active_button[B_SAVE]) {
+		ez_window_show(popup_window, false);
+		win1_data->save_file = win1_data->buf;
+		if(win1_data->active_button[B_PPM]) {
+			if (win1_data->active_button[B_MANDELBROT])
+				save_img(win1_data->mandelbrot, win1_data->save_file);
+			else if (win1_data->active_button[B_JULIA])
+				save_img(win1_data->julia, win1_data->save_file);
+		} else if (win1_data->active_button[B_PIXMAP]) {
+			if(win1_data->active_button[B_KOCH])
+				save_pixmap(win1_data->save_file, win1_data->list, win1_data->width, win1_data->height);
+		}
+	}
+    
+    if(win1_data->active_button[B_LOAD]) {
+		ez_window_show(popup_window, false);
+		win1_data->save_file = win1_data->buf;
+		if(win1_data->active_button[B_PPM]) {
+			printf("Le system de charge PPM pas encore fonctionnel");
+		} else if (win1_data->active_button[B_PIXMAP]) {
+			if(win1_data->active_button[B_KOCH])
+				win1_data->list = load_pixmap(win1_data->save_file, &win1_data->width, &win1_data->height);
+		}
+	}
+	
 }

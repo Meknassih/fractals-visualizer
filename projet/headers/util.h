@@ -226,5 +226,7 @@ void free_image(Image *im);
 void print_mandelbrot_julia(Ez_window window, int thickness, Image *fractale, bool isJulia);
 void save_img(Image *img, char *nf);
 Image* load_img(char *nf);
+void init_active_buttons_zoom_text_entry(Win_Data *win1_data, bool r);
+void valid_text_entry(Win_Data *win1_data);
 
 #endif

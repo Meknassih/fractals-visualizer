@@ -245,100 +245,23 @@ void win3_on_expose(Ez_event *ev) {
 		ez_draw_text(ev->win, EZ_MC, WIDTH_POPUP/2, (HEIGHT_POPUP/2)+20, "ENTREE pour valider");
 	}
 
-	ez_set_data(drawing_window, win1_data);
+	ez_set_data(drawing_window, win1_data); 
 }
 
 void win3_on_keypress(Ez_event *ev) {
-  Win_Data *win1_data = ez_get_data(drawing_window);
-  
-  /* Ces valeurs temporaires nous permettes d'éviter la regénération
-   * des fractales si les nouvelles valeurs saisi par l'utilisateur
-   * leur sont égals
-   * */
-  int tmp_n=0;
-  double tmp_c = 0.0;
-  double tmp_z0c_reel = 0.0;	
-  double tmp_z0c_imaginaire = 0.0;
-  
-  int k = text_input(ev, win1_data->temp_buf);
-  
-  // Lorsque l'utilisateur clique sur ENTREE
-  if (k == 2) {
-	strncpy(win1_data->buf, win1_data->temp_buf, BUF_MAX); // On récupère le texte saisi
-	ez_set_data(drawing_window, win1_data);
+	Win_Data *win1_data = ez_get_data(drawing_window);
+	int k = text_input(ev, win1_data->temp_buf);
 
-	if(win1_data->active_button[B_N]) {  // Si modification de n !
-		ez_window_show(popup_window, false);
-		tmp_n = win1_data->n; 
-		win1_data->n = atoi(win1_data->buf); // convertir en entier
-		if(win1_data->n != tmp_n && win1_data->active_button[B_KOCH]) { // Ne regénére un nouveau koch que si la nouvelle valeur de n est différente de l'ancienne !
-			win1_data->list = koch(drawing_window, win1_data->n , win1_data->c);
-		}
+	/* Lorsque l'utilisateur clique sur ENTREE */
+	if (k == 2) {
+		strncpy(win1_data->buf, win1_data->temp_buf, BUF_MAX); // récupère le texte saisi
+		valid_text_entry(win1_data); // valide le texte saisi
+		ez_set_data(drawing_window, win1_data); // envoie les donner a win1_data
+		ez_send_expose(ui_window); // Afficher la nouvelle valeur sur l'interface graphique
+		ez_send_expose(drawing_window); // Dessine sur notre fenêtre d'affichage de fractals
 	}
-	
-    if(win1_data->active_button[B_C]) {
-		ez_window_show(popup_window, false);
-		tmp_c = win1_data->c;
-		win1_data->c = atoi(win1_data->buf); // convertir en entier
-		if(win1_data->c != tmp_c && win1_data->active_button[B_KOCH]) {
-			win1_data->list = koch(drawing_window, win1_data->n , win1_data->c);
-		}
-	}
-	
-    if(win1_data->active_button[B_DELAY]) {
-		ez_window_show(popup_window, false);
-		win1_data->delay_anim = atoi(win1_data->buf); // convertir en entier
-	}
-	
-	if(win1_data->active_button[B_Z0C_REEL]) {  
-      ez_window_show(popup_window, false);
-      tmp_z0c_reel = (win1_data->z0_c).reel; 
-      (win1_data->z0_c).reel = atof(win1_data->buf);
-      if((win1_data->z0_c).reel != tmp_z0c_reel && win1_data->active_button[B_JULIA]) { 
-        win1_data->julia = generate_mandelbrot_julia(win1_data->z0_c,WIDTH_MAIN,HEIGHT_MAIN,-1.25,1.25,-1.25,1.25,true,true);
-      }
-    }
 
-    if(win1_data->active_button[B_Z0C_IMAGINAIRE]) {  // Si modification de n !
-      ez_window_show(popup_window, false);
-      tmp_z0c_imaginaire = (win1_data->z0_c).imaginaire; 
-      (win1_data->z0_c).imaginaire = atof(win1_data->buf);
-      if((win1_data->z0_c).imaginaire != tmp_z0c_imaginaire  && win1_data->active_button[B_JULIA]) { 
-        win1_data->julia = generate_mandelbrot_julia(win1_data->z0_c,WIDTH_MAIN,HEIGHT_MAIN,-1.25,1.25,-1.25,1.25,true,true);
-      }
-    }
-    
-    if(win1_data->active_button[B_SAVE]) {
-		ez_window_show(popup_window, false);
-		win1_data->save_file = win1_data->buf;
-		if(win1_data->active_button[B_PPM]) {
-			if (win1_data->active_button[B_MANDELBROT])
-				save_img(win1_data->mandelbrot, win1_data->save_file);
-			else if (win1_data->active_button[B_JULIA])
-				save_img(win1_data->julia, win1_data->save_file);
-		} else if (win1_data->active_button[B_PIXMAP]) {
-			if(win1_data->active_button[B_KOCH])
-				save_pixmap(win1_data->save_file, win1_data->list, win1_data->width, win1_data->height);
-		}
-	}
-    
-    if(win1_data->active_button[B_LOAD]) {
-		ez_window_show(popup_window, false);
-		win1_data->save_file = win1_data->buf;
-		if(win1_data->active_button[B_PPM]) {
-			printf("Le system de charge PPM pas encore fonctionnel");
-		} else if (win1_data->active_button[B_PIXMAP]) {
-			if(win1_data->active_button[B_KOCH])
-				win1_data->list = load_pixmap(win1_data->save_file, &win1_data->width, &win1_data->height);
-		}
-	}
-	
-	
-	ez_send_expose(ui_window); // Afficher la nouvelle valeur sur l'interface graphique
-	ez_send_expose(drawing_window); // Dessine sur notre fenêtre d'affichage de fractals
-  }
-  
-  if (k > 0) ez_send_expose(ev->win);
+	if (k > 0) ez_send_expose(ev->win);
 }
 
 void win3_on_close(Ez_event *ev) {
@@ -348,11 +271,11 @@ void win3_on_close(Ez_event *ev) {
 void win3_event(Ez_event *ev) {
 	switch(ev->type) {
 	case Expose:
-	  win3_on_expose(ev);
-	  break;
+		win3_on_expose(ev);
+		break;
 	case KeyPress:
-      win3_on_keypress(ev);
-      break;
+		win3_on_keypress(ev);
+		break;
     case WindowClose:
 		win3_on_close(ev);
 		break;

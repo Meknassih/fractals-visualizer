@@ -8,7 +8,7 @@
 
 
 
-// Alloue de la mémoire pour un tableau 'l' ligne, 4 colonnes
+/* Alloue de la mémoire pour un tableau 'l' ligne, 4 colonnes */
 int ** createTable(int l){
   int **tableau = (int **)malloc(sizeof(int*)*l);
   int *tableau2 = (int *)malloc(sizeof(int)*4*l);
@@ -16,6 +16,7 @@ int ** createTable(int l){
   for (i=0 ; i<l ; i++)  tableau[i] = &tableau2[i*4];
   return tableau;
 }
+
 
 Ez_image * init_background(){
   Ez_image *image_background;
@@ -240,291 +241,229 @@ void create_buttons(int *count_buttons, int **bptab, int nbr_buttons, int largeu
  *	Et vérifie si un boutton est activé au tableau active_button[i]
  * */
 void draw_buttons(Ez_window ui_win	, Ez_window drawing_win){
-  Win_Data *win1_data = ez_get_data(drawing_win);
-  int i;
-  for(i=0; i < win1_data->count_buttons; i++) {
-    if(win1_data->active_button[i]){
-      ez_image_paint(ui_win, win1_data->image_active_button[i], win1_data->bptab[i][0], win1_data->bptab[i][1]);
-    } else {
-      ez_image_paint(ui_win, win1_data->image_button[i], win1_data->bptab[i][0], win1_data->bptab[i][1]);
-    }
-  }
+	Win_Data *win1_data = ez_get_data(drawing_win);
+	int i;
+	
+	for(i=0; i < win1_data->count_buttons; i++) {
+		if(win1_data->active_button[i]){
+			ez_image_paint(ui_win, win1_data->image_active_button[i], win1_data->bptab[i][0], win1_data->bptab[i][1]);
+		} else {
+			ez_image_paint(ui_win, win1_data->image_button[i], win1_data->bptab[i][0], win1_data->bptab[i][1]);
+		}
+	}
 }
 
 /* Dessine tous les textes qui doivent se trouver dans le menu 
  * interface graphique                                        */
 void draw_text(Ez_window ui_win, Ez_window drawing_win) {
-  Win_Data *win1_data = ez_get_data(drawing_win);
-  
-  ez_set_nfont(0);
-  ez_set_color(ez_blue);
-  ez_draw_text (ui_win, EZ_TL, 10, 10, "Choix de fractales");
-  ez_draw_text (ui_win, EZ_TL, 260, 10, "Zoom");
-  ez_draw_text (ui_win, EZ_TL, 10, 75, "Choix animations (Koch seulement)");
-  ez_draw_text (ui_win, EZ_TL, 10, 180, "Parametre du flocon de koch");
-  ez_draw_text (ui_win, EZ_TL, 10, 260, "Parametre de Mandelbrot");
-  ez_draw_text (ui_win, EZ_TL, 10, 320, "Parametre de Julia");
-  ez_draw_text (ui_win, EZ_TL, 10, 400, "Parametre de sauvegarde");
-  // Paramètres Koch
-  ez_set_color(ez_black);
-  ez_draw_text (ui_win, EZ_TL, 30, 200, "Nombre d'iteration (n)         :");
-  ez_draw_text (ui_win, EZ_TL, 235, 200, "%d", win1_data->n);
-  ez_draw_rectangle (ui_win, 230,197,260,212);
-  
-  ez_draw_text (ui_win, EZ_TL, 30, 220, "Taille du segement             :");
-  ez_draw_text (ui_win, EZ_TL, 235, 220, "%.0lf", win1_data->c);
-  ez_draw_rectangle (ui_win, 230,217, 260,232); 
-  ez_draw_text (ui_win, EZ_TL, 265, 220, "pixel");
-  
-  ez_draw_text (ui_win, EZ_TL, 30, 240, "Delais entre 2 flocons animes  :");
-  ez_draw_text (ui_win, EZ_TL, 235, 240, "%d", win1_data->delay_anim);
-  ez_draw_rectangle (ui_win, 230,237, 260,252);
-  ez_draw_text (ui_win, EZ_TL, 265, 240, "ms");
-  
-  // Parametres mandelbrot
-  ez_draw_text (ui_win, EZ_TL, 30, 280, "Reel(z0) = 0  & Imaginaire(z0) = 0");
-  ez_draw_text (ui_win, EZ_TL, 30, 300, "Couleur Mandelbrot :");
-  // Paramatres Julia
-  ez_draw_text (ui_win, EZ_TL, 30, 340, "Le comlexe initial C");
-  
-  ez_draw_text (ui_win, EZ_TL, 40, 360, "reel(C)       :");
-  ez_draw_text (ui_win, EZ_TL, 235, 360, "%.5lf", (double)(win1_data->z0_c).reel);
-  ez_draw_rectangle (ui_win, 230,357, 285,372);
-  
-  ez_draw_text (ui_win, EZ_TL, 40, 380, "imaginaire(C) :");
-  ez_draw_text (ui_win, EZ_TL, 235, 380, "%.5lf", (double)(win1_data->z0_c).imaginaire);
-  ez_draw_rectangle (ui_win, 230,377, 285, 392);
-  
+	Win_Data *win1_data = ez_get_data(drawing_win);
 
-  // Parametre de sauvegarde
-  ez_draw_text (ui_win, EZ_TL, 30, 420, "Liste pixel  :");
-  ez_draw_text (ui_win, EZ_TL, 30, 445, "PPM          :");
+	ez_set_nfont(0);
+	ez_set_color(ez_blue);
+	ez_draw_text (ui_win, EZ_TL, 10, 10, "Choix de fractales");
+	ez_draw_text (ui_win, EZ_TL, 260, 10, "Zoom");
+	ez_draw_text (ui_win, EZ_TL, 10, 75, "Choix animations (Koch seulement)");
+	ez_draw_text (ui_win, EZ_TL, 10, 180, "Parametre du flocon de koch");
+	ez_draw_text (ui_win, EZ_TL, 10, 260, "Parametre de Mandelbrot");
+	ez_draw_text (ui_win, EZ_TL, 10, 320, "Parametre de Julia");
+	ez_draw_text (ui_win, EZ_TL, 10, 400, "Parametre de sauvegarde");
+	// Paramètres Koch
+	ez_set_color(ez_black);
+	ez_draw_text (ui_win, EZ_TL, 30, 200, "Nombre d'iteration (n)         :");
+	ez_draw_text (ui_win, EZ_TL, 235, 200, "%d", win1_data->n);
+	ez_draw_rectangle (ui_win, 230,197,260,212);
+
+	ez_draw_text (ui_win, EZ_TL, 30, 220, "Taille du segement             :");
+	ez_draw_text (ui_win, EZ_TL, 235, 220, "%.0lf", win1_data->c);
+	ez_draw_rectangle (ui_win, 230,217, 260,232); 
+	ez_draw_text (ui_win, EZ_TL, 265, 220, "pixel");
+
+	ez_draw_text (ui_win, EZ_TL, 30, 240, "Delais entre 2 flocons animes  :");
+	ez_draw_text (ui_win, EZ_TL, 235, 240, "%d", win1_data->delay_anim);
+	ez_draw_rectangle (ui_win, 230,237, 260,252);
+	ez_draw_text (ui_win, EZ_TL, 265, 240, "ms");
+
+	// Parametres mandelbrot
+	ez_draw_text (ui_win, EZ_TL, 30, 280, "Reel(z0) = 0  & Imaginaire(z0) = 0");
+	ez_draw_text (ui_win, EZ_TL, 30, 300, "Couleur Mandelbrot :");
+	// Paramatres Julia
+	ez_draw_text (ui_win, EZ_TL, 30, 340, "Le comlexe initial C");
+
+	ez_draw_text (ui_win, EZ_TL, 40, 360, "reel(C)       :");
+	ez_draw_text (ui_win, EZ_TL, 235, 360, "%.5lf", (double)(win1_data->z0_c).reel);
+	ez_draw_rectangle (ui_win, 230,357, 285,372);
+
+	ez_draw_text (ui_win, EZ_TL, 40, 380, "imaginaire(C) :");
+	ez_draw_text (ui_win, EZ_TL, 235, 380, "%.5lf", (double)(win1_data->z0_c).imaginaire);
+	ez_draw_rectangle (ui_win, 230,377, 285, 392);
+
+
+	// Parametre de sauvegarde
+	ez_draw_text (ui_win, EZ_TL, 30, 420, "Liste pixel  :");
+	ez_draw_text (ui_win, EZ_TL, 30, 445, "PPM          :");
 }
 
 /*	Récupérer les cordonnes du clique souris
- *	Et envoie l'ID du point ou l'utilisateur à cliquer
+ *	Et envoie l'ID du bouton ou l'utilisateur à cliquer
  * */
 button get_button_id(int **bptab, int count_buttons, int mx, int my){
-  int i;
-  
-  for(i=0; i < count_buttons; i++) {
-    if(mx >= bptab[i][0] && my >= bptab[i][1] && mx <= bptab[i][2] && my <= bptab[i][3]) {
-      printf("Ta cliqué sur le bouton numéro %d\n", i); //DEBUG
-      break;
-    } else if (i == count_buttons-1) {
-      printf("Tu n'as pas cliqué sur un bouton là\n"); //DEBUG
-      return -1;
-    }
-  }
-  
-  return (button) i;
+	int i;  
+	
+	for(i=0; i < count_buttons; i++) {
+		if(mx >= bptab[i][0] && my >= bptab[i][1] && mx <= bptab[i][2] && my <= bptab[i][3]) break; // Si bouton détécté
+		else if (i == count_buttons-1) return -1;
+	  }
+	  
+	  return (button) i; // retur l'id du bouton
 }
 
 /* Exécute une action dépendant du boutton cliqué par l'utilisateur
  * TODO: on ne devrait pas passer la window mais que Win_data      */
  
 void execute_button_press(Ez_window drawing_win, button id_button){
-  Win_Data *win1_data = ez_get_data(drawing_win);
-  switch(id_button) {
-    // Choix fractales
-  case B_KOCH:
-    win1_data->active_button[B_MANDELBROT]  = 0;
-    win1_data->active_button[B_JULIA] 		= 0;
-    win1_data->active_button[B_KOCH] 		= 1;
-    win1_data->mode = PIXMAP;
-    win1_data->active_button[B_PPM] = 0;
-    win1_data->active_button[B_PIXMAP] = 1;
-    win1_data->list = koch(drawing_window, win1_data->n , win1_data->c);
-    ez_send_expose(drawing_window);
-    break;
-  case B_MANDELBROT:
-    win1_data->active_button[B_KOCH] 		= 0;
-    win1_data->active_button[B_JULIA] 		= 0;
-    win1_data->active_button[B_MANDELBROT]  = 1;
-    win1_data->mode = PPM;
-    win1_data->active_button[B_PPM] = 1;
-    win1_data->active_button[B_PIXMAP] = 0;
-    /* Apropos des valeurs xmin xmax ymin ymax qui permette la convertion en plan complexes
-     * Il sont égals à (-1.25,1.25,-1.25,1.25) pour JULIA
-     * et (-2.0,2.0,-1.25,1.25) pour Manlbrot 
-     * */
-    if(win1_data->mandelbrot == NULL)
-		win1_data->mandelbrot = generate_mandelbrot_julia(win1_data->z0,WIDTH_MAIN,HEIGHT_MAIN,-2.0,2.0,-1.25,1.25,false,win1_data->is_mandel_color);
-    ez_send_expose(drawing_window);
-    break;
-  case B_JULIA:
-    win1_data->active_button[B_KOCH] 		= 0;
-    win1_data->active_button[B_MANDELBROT]  = 0;
-    win1_data->active_button[B_JULIA] 		= 1;
-    win1_data->mode = PPM;
-    win1_data->active_button[B_PPM] = 1;
-    win1_data->active_button[B_PIXMAP] = 0;
-	if(win1_data->julia == NULL)
-		win1_data->julia = generate_mandelbrot_julia(win1_data->z0_c,WIDTH_MAIN,HEIGHT_MAIN,-1.25,1.25,-1.25,1.25,true,true);
-    ez_send_expose(drawing_window);
-    break;
-    		
-    // Choix animations
-  case B_ANIME1:
-	win1_data->active_button[B_ANIME2] = 0;
-	win1_data->active_button[B_STOPANIM] = 0;
-	printf("simultané \n");
-	win1_data->mode_anim = SIMULTANE;
-	ez_start_timer(drawing_window, -1); //Supprime le timer
+	Win_Data *win1_data = ez_get_data(drawing_win);
 
-	win1_data->active_button[B_ANIME1] = 1;
-	ez_send_expose(drawing_window); //Force à redessiner toutes les formes
-    break;
-  case B_ANIME2:
-    win1_data->active_button[B_ANIME1] = 0;
-    win1_data->active_button[B_STOPANIM] = 0;
-	win1_data->mode_anim = SEQUENTIEL;
-	win1_data->step_anim = 0; //Remet l'animation à 0
-    ez_start_timer(drawing_window, win1_data->delay_anim); //Met en place le timer
-    
-    win1_data->active_button[B_ANIME2] = 1;
-	ez_send_expose(drawing_window); //Force à redessiner toutes les formes
+	switch(id_button) {
+		/* Choix de fractal à afficher */
+		case B_KOCH:
+			win1_data->active_button[B_MANDELBROT]  = false;
+			win1_data->active_button[B_JULIA] 		= false;
+			win1_data->active_button[B_KOCH] 		= true;
+			win1_data->mode = PIXMAP;
+			win1_data->active_button[B_PPM] = false;
+			win1_data->active_button[B_PIXMAP] = true;
+			win1_data->list = koch(drawing_window, win1_data->n , win1_data->c);
+			ez_send_expose(drawing_window);
+			break;
+		case B_MANDELBROT:
+			win1_data->active_button[B_KOCH] 		= false;
+			win1_data->active_button[B_JULIA] 		= false;
+			win1_data->active_button[B_MANDELBROT]  = true;
+			win1_data->mode = PPM;
+			win1_data->active_button[B_PPM] = true;
+			win1_data->active_button[B_PIXMAP] = false;
+			if(win1_data->mandelbrot == NULL)
+				win1_data->mandelbrot = generate_mandelbrot_julia(win1_data->z0,WIDTH_MAIN,HEIGHT_MAIN,-2.0,2.0,-1.25,1.25,false,win1_data->is_mandel_color);
+			ez_send_expose(drawing_window);
+			break;
+		case B_JULIA:
+			win1_data->active_button[B_KOCH] 		= false;
+			win1_data->active_button[B_MANDELBROT]  = false;
+			win1_data->active_button[B_JULIA] 		= true;
+			win1_data->mode = PPM;
+			win1_data->active_button[B_PPM] = true;
+			win1_data->active_button[B_PIXMAP] = false;
+			if(win1_data->julia == NULL)
+				win1_data->julia = generate_mandelbrot_julia(win1_data->z0_c,WIDTH_MAIN,HEIGHT_MAIN,-1.25,1.25,-1.25,1.25,true,true);
+			ez_send_expose(drawing_window);
+			break;
 
-    break;
-  case B_ANIME3:
-    if (win1_data->active_button[B_ANIME3]) win1_data->active_button[B_ANIME3] = 0;
-    else win1_data->active_button[B_ANIME3] = 1;
-    break;
-  case B_STOPANIM:
-    if (win1_data->active_button[B_STOPANIM]) win1_data->active_button[B_STOPANIM] = 0;
-    else win1_data->active_button[B_STOPANIM] = 1;
-    break;
+		/* Choix animations */
+		case B_ANIME1:
+			win1_data->active_button[B_ANIME2] = 0;
+			win1_data->active_button[B_STOPANIM] = 0;
+			printf("simultané \n");
+			win1_data->mode_anim = SIMULTANE;
+			ez_start_timer(drawing_window, -1); //Supprime le timer
+			win1_data->active_button[B_ANIME1] = 1;
+			ez_send_expose(drawing_window); //Force à redessiner toutes les formes
+			break;
+		case B_ANIME2:
+			win1_data->active_button[B_ANIME1] = 0;
+			win1_data->active_button[B_STOPANIM] = 0;
+			win1_data->mode_anim = SEQUENTIEL;
+			win1_data->step_anim = 0; //Remet l'animation à 0
+			ez_start_timer(drawing_window, win1_data->delay_anim); //Met en place le timer
+			win1_data->active_button[B_ANIME2] = 1;
+			ez_send_expose(drawing_window); //Force à redessiner toutes les formes
+			break;
+		case B_ANIME3:
+			if (win1_data->active_button[B_ANIME3]) win1_data->active_button[B_ANIME3] = 0;
+			else win1_data->active_button[B_ANIME3] = 1;
+			break;
+		case B_STOPANIM:
+			if (win1_data->active_button[B_STOPANIM]) win1_data->active_button[B_STOPANIM] = 0;
+			else win1_data->active_button[B_STOPANIM] = 1;
+			break;
+
+		/* Choix zoom */
+		case B_ZOOM4:
+			init_active_buttons_zoom_text_entry(win1_data, false); // désative toutes les cases du zoom
+			win1_data->active_button[B_ZOOM4] = true;
+			win1_data->factor = 4;
+			break;
+		case B_ZOOM6:
+			init_active_buttons_zoom_text_entry(win1_data, false);
+			win1_data->active_button[B_ZOOM6] = true;
+			win1_data->factor = 6;
+			break;
+		case B_ZOOM8:
+			init_active_buttons_zoom_text_entry(win1_data, false);
+			win1_data->active_button[B_ZOOM8] = true;
+			win1_data->factor = 8;
+			break;
+		case B_ZOOM10:
+			init_active_buttons_zoom_text_entry(win1_data, false);
+			win1_data->active_button[B_ZOOM10] = true;
+			win1_data->factor = 10;
+			break;
+
+		/* Choix animations */
+		case B_ISMAND_COLOR:
+			if (win1_data->active_button[B_ISMAND_COLOR]) {
+				win1_data->active_button[B_ISMAND_COLOR] = false;
+				win1_data->is_mandel_color = false;
+			} else {
+				win1_data->active_button[B_ISMAND_COLOR] = true;
+				win1_data->is_mandel_color = true;
+			}
+			win1_data->mandelbrot = generate_mandelbrot_julia(win1_data->z0,WIDTH_MAIN,HEIGHT_MAIN,-2.0,2.0,-1.25,1.25,0,win1_data->is_mandel_color);
+			ez_send_expose(drawing_window);	
+			break;
 		
-    // Choix zooms
-  case B_ZOOM4:
-    win1_data->active_button[B_ZOOM4]  = 1;
-    win1_data->active_button[B_ZOOM6]  = 0;
-    win1_data->active_button[B_ZOOM8]  = 0;
-    win1_data->active_button[B_ZOOM10] = 0;
-    win1_data->factor = 4;
-    break;
-  case B_ZOOM6:
-    win1_data->active_button[B_ZOOM4]  = 0;
-    win1_data->active_button[B_ZOOM6]  = 1;
-    win1_data->active_button[B_ZOOM8]  = 0;
-    win1_data->active_button[B_ZOOM10] = 0;
-    win1_data->factor = 6;
-    break;
-  case B_ZOOM8:
-    win1_data->active_button[B_ZOOM4]  = 0;
-    win1_data->active_button[B_ZOOM6]  = 0;
-    win1_data->active_button[B_ZOOM8]  = 1;
-    win1_data->active_button[B_ZOOM10] = 0;
-    win1_data->factor = 8;
-    break;
-  case B_ZOOM10:
-    win1_data->active_button[B_ZOOM4]  = 0;
-    win1_data->active_button[B_ZOOM6]  = 0;
-    win1_data->active_button[B_ZOOM8]  = 0;
-    win1_data->active_button[B_ZOOM10] = 1;
-    win1_data->factor = 10;
-    break;
-    // Check box, active les couleurs mandelbrot
-  case B_ISMAND_COLOR:
-    if (win1_data->active_button[B_ISMAND_COLOR]) {
-		win1_data->active_button[B_ISMAND_COLOR] = 0;
-		win1_data->is_mandel_color = false;
-	} else {
-		win1_data->active_button[B_ISMAND_COLOR] = 1;
-		win1_data->is_mandel_color = true;
+		/* Les cases de saisi de textes */
+		case B_N:
+			init_active_buttons_zoom_text_entry(win1_data, 1); // désative tous les boutons de saisi de textes
+			win1_data->active_button[B_N] = true;
+			ez_window_show(popup_window, true);
+			break;
+		case B_C:
+			init_active_buttons_zoom_text_entry(win1_data, 1);
+			win1_data->active_button[B_C] = true;
+			ez_window_show(popup_window, true);
+			break;
+		case B_DELAY:
+			init_active_buttons_zoom_text_entry(win1_data, 1);
+			win1_data->active_button[B_DELAY] = true;
+			ez_window_show(popup_window, true);
+			break;
+		case B_Z0C_REEL:
+			init_active_buttons_zoom_text_entry(win1_data, 1);
+			win1_data->active_button[B_Z0C_REEL] = true;
+			ez_window_show(popup_window, true);
+			break;
+		case B_Z0C_IMAGINAIRE:
+			init_active_buttons_zoom_text_entry(win1_data, 1);
+			win1_data->active_button[B_Z0C_IMAGINAIRE] = true;
+			ez_window_show(popup_window, true);
+			break;
+	
+		/* Bouttons sauvegarde & chargement */
+		case B_SAVE:
+			init_active_buttons_zoom_text_entry(win1_data, 1);
+			win1_data->active_button[B_SAVE]  = true;
+			ez_window_show(popup_window, true);
+			break;
+		case B_LOAD:
+			init_active_buttons_zoom_text_entry(win1_data, 1);
+			win1_data->active_button[B_LOAD]  = true;
+			ez_window_show(popup_window, true);
+			break;
+
+		default:
+			break;
 	}
-    win1_data->mandelbrot = generate_mandelbrot_julia(win1_data->z0,WIDTH_MAIN,HEIGHT_MAIN,-2.0,2.0,-1.25,1.25,0,win1_data->is_mandel_color);
-	ez_send_expose(drawing_window);	
-    break;
-  // Cases de saisie
-  case B_N:
-	win1_data->active_button[B_N] = 1;
-	win1_data->active_button[B_C] = 0;
-	win1_data->active_button[B_DELAY] = 0;
-	win1_data->active_button[B_Z0C_REEL] = 0;
-	win1_data->active_button[B_Z0C_IMAGINAIRE] = 0;
-    win1_data->active_button[B_SAVE]  = 0;
-	win1_data->active_button[B_LOAD]  = 0;
-	ez_window_show(popup_window, true);
-
-    break;
-  case B_C:
-	win1_data->active_button[B_N] = 0;
-	win1_data->active_button[B_C] = 1;
-	win1_data->active_button[B_DELAY] = 0;
-	win1_data->active_button[B_Z0C_REEL] = 0;
-	win1_data->active_button[B_Z0C_IMAGINAIRE] = 0;
-    win1_data->active_button[B_SAVE]  = 0;
-	win1_data->active_button[B_LOAD]  = 0;
-	ez_window_show(popup_window, true);
-    break;
-  case B_DELAY:
-	win1_data->active_button[B_N] = 0;
-	win1_data->active_button[B_C] = 0;
-	win1_data->active_button[B_DELAY] = 1;
-	win1_data->active_button[B_Z0C_REEL] = 0;
-	win1_data->active_button[B_Z0C_IMAGINAIRE] = 0;
-    win1_data->active_button[B_SAVE]  = 0;
-	win1_data->active_button[B_LOAD]  = 0;
-	ez_window_show(popup_window, true);
-    break;
-  case B_Z0C_REEL:
-	win1_data->active_button[B_N] = 0;
-	win1_data->active_button[B_C] = 0;
-	win1_data->active_button[B_DELAY] = 0;
-	win1_data->active_button[B_Z0C_REEL] = 1;
-	win1_data->active_button[B_Z0C_IMAGINAIRE] = 0;
-    win1_data->active_button[B_SAVE]  = 0;
-	win1_data->active_button[B_LOAD]  = 0;
-	ez_window_show(popup_window, true);
-    break;
-   case B_Z0C_IMAGINAIRE:
-	win1_data->active_button[B_N] = 0;
-	win1_data->active_button[B_C] = 0;
-	win1_data->active_button[B_DELAY] = 0;
-	win1_data->active_button[B_Z0C_REEL] = 0;
-	win1_data->active_button[B_Z0C_IMAGINAIRE] = 1;
-    win1_data->active_button[B_SAVE]  = 0;
-	win1_data->active_button[B_LOAD]  = 0;
-	ez_window_show(popup_window, true);
-    break;
-    // Choix du type de sauvegarde et chargement
-  case B_PIXMAP:
-
-    break;
-  case B_PPM:
-
-    break;
-			
-    // Boutton sauvegarde
-  case B_SAVE:
-	win1_data->active_button[B_N] = 0;
-	win1_data->active_button[B_C] = 0;
-	win1_data->active_button[B_DELAY] = 0;
-	win1_data->active_button[B_Z0C_REEL] = 0;
-	win1_data->active_button[B_Z0C_IMAGINAIRE] = 0;
-    win1_data->active_button[B_SAVE]  = 1;
-	win1_data->active_button[B_LOAD]  = 0;
-	ez_window_show(popup_window, true);
-    break;
-		
-    // Boutton Chargement
-  case B_LOAD:
-  	win1_data->active_button[B_N] = 0;
-	win1_data->active_button[B_C] = 0;
-	win1_data->active_button[B_DELAY] = 0;
-	win1_data->active_button[B_Z0C_REEL] = 0;
-	win1_data->active_button[B_Z0C_IMAGINAIRE] = 0;
-	win1_data->active_button[B_SAVE]  = 0;
-	win1_data->active_button[B_LOAD]  = 1;
-	ez_window_show(popup_window, true);
-    break;
-
-  default:
-		
-    break;
-  }
-  ez_set_data(drawing_win, win1_data); //renvoie les données modifier à notre fenêtre
+	ez_set_data(drawing_win, win1_data); //renvoie les données modifier à notre fenêtre
 }
 
 int text_input(Ez_event *ev, char *s) {

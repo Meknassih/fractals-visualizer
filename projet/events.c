@@ -41,13 +41,13 @@ void win1_on_expose(Ez_event *ev) {
 void win1_on_configure(Ez_event *ev) {
   Win_Data *win1_data = ez_get_data(ev->win);
 
-  if (win1_data->configure_count > 1) {
-    printf("ConfigureNotify ! %i\n", win1_data->configure_count++);
+ // if (win1_data->configure_count > 1) {
+    //printf("ConfigureNotify ! %i\n", win1_data->configure_count++);
 
-    win1_data->list = redimensionner_flocon(win1_data->list, ev->width, ev->height , &win1_data->width, &win1_data->height);
+	win1_data->list = redimensionner_flocon(win1_data->list, ev->width, ev->height , &win1_data->width, &win1_data->height);
     ez_set_data(ev->win, win1_data);
     ez_send_expose(ev->win);
-  }
+ // }
 }
 
 void win1_on_keypress (Ez_event *ev) {
@@ -106,15 +106,18 @@ void win1_on_button_press(Ez_event *ev) {
 
 void win1_on_timer(Ez_event *ev) {
 	Win_Data *win_data = ez_get_data(ev->win);
-
-	if (win_data->step_anim < win_data->n)
-		win_data->step_anim+=1;
-	if (win_data->step_anim == win_data->n)
-		win_data->step_anim=0;
-		
-	
+	if(win_data->step_anim == win_data->n) {
+		if(win_data->active_button[B_ANIME2]) win_data->step_anim = win_data->n;
+		else win_data->step_anim = 0;
+	} else {
+		if (win_data->step_anim < win_data->n)
+			win_data->step_anim+=1;
+		if (win_data->step_anim > win_data->n)
+			win_data->step_anim=0;
+	}
 	ez_set_data(ev->win, win_data);
 	ez_send_expose(ev->win);
+	
 	ez_start_timer(ev->win, win_data->delay_anim);
 }
 
